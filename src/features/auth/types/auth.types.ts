@@ -19,9 +19,31 @@ export type User = {
     isApproved: boolean;
   };
 };
-
-export type SessionResponse = {
-  data?: {
-    user?: User;
+export type BetterAuthResponse<T = unknown> = {
+  data?: T;
+  error?: {
+    message: string;
+    status: number;
   };
 };
+
+export type SessionResponse = BetterAuthResponse<{
+  user: User;
+  session: {
+    id: string;
+    expiresAt: string;
+    token: string;
+  };
+}>;
+
+export type AuthResponse<T = unknown> = BetterAuthResponse<T>;
+
+export type SignInResponse = BetterAuthResponse<{
+  user: User;
+  session: unknown;
+}>;
+export type SignUpResponse = BetterAuthResponse<{
+  user: User;
+  session: unknown;
+  token: string;
+}>;
