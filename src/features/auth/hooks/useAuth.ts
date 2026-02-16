@@ -1,13 +1,17 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
+import { useAuthContext } from "../context";
 
 export function useAuth() {
-  const { data, isPending } = authClient.useSession();
+  const { session, loading, refresh } = useAuthContext();
 
   return {
-    user: data?.user ?? null,
-    loading: isPending,
-    isAuthenticated: !!data?.user,
+    session,
+    user: session?.user ?? null,
+
+    role: session?.user.role ?? null,
+    isAuthenticated: !!session,
+    loading,
+    refresh,
   };
 }
