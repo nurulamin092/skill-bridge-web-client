@@ -92,37 +92,35 @@ function getSessionFromCookie(request: NextRequest): AuthSession | null {
       request.cookies.get("__Secure-better-auth.session")?.value ||
       request.cookies.get("better-auth.session_token")?.value;
 
-    if (!sessionCookie) {
+    if (!sessionCookie) return null;
+
+    let session: AuthSession | null = null;
+
+    try {
+      const decoded = Buffer.from(sessionCookie, "base64").toString("utf-8");
+      session = JSON.parse(decoded) as AuthSession;
+    } catch {
+      console.warn("Failed to parse session cookie, removing invalid cookie");
+
+      const response = NextResponse.next();
+      response.cookies.delete("better-auth.session");
+      response.cookies.delete("__Secure-better-auth.session");
+      response.cookies.delete("better-auth.session_token");
       return null;
     }
 
-    const session = JSON.parse(Buffer.from(sessionCookie, "base64").toString());
+    if (!session?.user?.id || !session?.user?.role) return null;
 
-    if (!session?.user?.id || !session?.user?.role) {
-      return null;
-    }
-
-    return session as AuthSession;
-  } catch (error) {
-    console.error("Session parse error:", error);
+    return session;
+  } catch (err) {
+    console.error("Unexpected session error:", err);
     return null;
   }
 }
 
 function checkRoleAccess(pathname: string, role: Role): boolean {
-  if (role === "ADMIN") {
-    return true;
-  }
-
-  for (const [allowedRole, routes] of Object.entries(ROLE_ROUTES)) {
-    if (role !== allowedRole) {
-      if (routes.some((route) => pathname.startsWith(route))) {
-        return false;
-      }
-    }
-  }
-
-  return true;
+  const allowedRouters = ROLE_ROUTES[role] || [];
+  return allowedRouters.some((route) => pathname.startsWith(route));
 }
 
 function getDashboardUrl(role: Role): string {
@@ -140,14 +138,6 @@ function getDashboardUrl(role: Role): string {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - api routes (if any)
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

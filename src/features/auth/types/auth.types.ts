@@ -29,6 +29,14 @@ export type AuthUser = {
   role: Role;
 };
 
+export interface LoginResponse {
+  user: {
+    id: string;
+    email: string;
+    role: Role;
+  };
+}
+
 export interface AuthSession {
   user: AuthUser;
 }
