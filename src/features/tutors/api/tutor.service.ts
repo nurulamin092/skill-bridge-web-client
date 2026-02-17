@@ -26,3 +26,10 @@ export const getTutors = async (
 
   return response.data;
 };
+
+export const getTutorById = async (id: string): Promise<Tutor> => {
+  const response = await apiFetch<{ success: boolean; data: Tutor }>(
+    `/tutors/${id}`,
+  );
+  return response.data;
+};
