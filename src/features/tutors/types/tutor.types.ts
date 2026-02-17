@@ -1,0 +1,76 @@
+export interface Tutor {
+  id: string;
+  bio?: string | null;
+  hourlyRate: number;
+  experience: number;
+  avgRating: number;
+  isApproved: boolean;
+
+  user: {
+    id: string;
+    name: string;
+  };
+
+  tutorCategories: {
+    category: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }[];
+}
+export interface TutorCardData {
+  id: string;
+  name: string;
+  hourlyRate: number;
+  experience: number;
+  rating: number;
+  categories: string[];
+}
+export interface SingleTutor {
+  id: string;
+  bio?: string | null;
+  hourlyRate: number;
+  experience: number;
+  avgRating: number;
+
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string;
+    phone?: string;
+  };
+
+  tutorCategories: {
+    category: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }[];
+
+  availabilities: {
+    id: string;
+    startTime: string;
+    endTime: string;
+  }[];
+
+  reviews: {
+    id: string;
+    rating: number;
+    comment: string;
+    student: {
+      id: string;
+      name: string;
+      image?: string;
+    };
+  }[];
+}
+
+export interface TutorQueryParams {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  rating?: number;
+}
