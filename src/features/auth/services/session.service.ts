@@ -14,7 +14,7 @@ export async function getSession(): Promise<AuthSession | null> {
       return null;
     }
 
-    if (isAuthUser(session.user)) {
+    if (!isAuthUser(session.user)) {
       return null;
     }
 

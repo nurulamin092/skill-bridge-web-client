@@ -17,15 +17,17 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "../hooks/useLogin";
-
 import { useForm } from "react-hook-form";
 import { LoginFormValues, loginSchema } from "../schemas";
 import Link from "next/link";
+import { useGoogleLogin } from "../hooks/useGoogleLogin";
+
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { mutate, isPending } = useLogin();
+  const { mutate: loginMutate, isPending: isLoginPending } = useLogin();
+  const { mutate: googleMutate, isPending: isGooglePending } = useGoogleLogin();
 
   const {
     register,
@@ -36,8 +38,11 @@ export function LoginForm({
   });
 
   const onSubmit = (data: LoginFormValues) => {
-    mutate(data);
+    loginMutate(data);
   };
+
+  const isPending = isLoginPending || isGooglePending;
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -57,16 +62,20 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   {...register("email")}
+                  disabled={isPending}
                 />
                 {errors.email && (
-                  <FieldDescription>{errors.email.message}</FieldDescription>
+                  <FieldDescription className="text-red-500">
+                    {errors.email.message}
+                  </FieldDescription>
                 )}
               </Field>
+
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <Link
-                    href="#"
+                    href="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
@@ -76,6 +85,7 @@ export function LoginForm({
                   id="password"
                   type="password"
                   {...register("password")}
+                  disabled={isPending}
                 />
                 {errors.password && (
                   <FieldDescription className="text-red-500">
@@ -83,16 +93,30 @@ export function LoginForm({
                   </FieldDescription>
                 )}
               </Field>
+
               <Field>
                 <Button type="submit" className="w-full" disabled={isPending}>
-                  {isPending ? "Logging in...." : "Login"}
+                  {isLoginPending ? "Logging in..." : "Login"}
                 </Button>
-                <Button variant="outline" type="button">
-                  Login with Google
+
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => googleMutate()}
+                  disabled={isGooglePending}
+                  className="w-full"
+                >
+                  {isGooglePending ? "Connecting..." : "Login with Google"}
                 </Button>
+
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
-                  <Link href="/register">Sign up</Link>
+                  <Link
+                    href="/register"
+                    className="underline underline-offset-4"
+                  >
+                    Sign up
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

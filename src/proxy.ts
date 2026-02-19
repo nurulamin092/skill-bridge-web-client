@@ -59,6 +59,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const role = session.user.role;
+
   if (!isValidRole(role)) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);

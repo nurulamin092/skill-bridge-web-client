@@ -26,7 +26,7 @@ export async function login(data: LoginPayload): Promise<LoginResponse> {
     throw new Error("Login failed:No user data received");
   }
   if (!isAuthUser(result.user)) {
-    throw new Error("Login failed:No user data received");
+    throw new Error("Login failed: Invalid user data structure");
   }
 
   const user = result.user as BetterAuthUser;

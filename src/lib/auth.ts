@@ -6,7 +6,7 @@ export async function getSessionFromCookie(
   request: NextRequest,
 ): Promise<AuthSession | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_AUTH_URL}/get-session`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_AUTH_URL}/session`, {
       headers: {
         Cookie: request.headers.get("cookie") || "",
       },
