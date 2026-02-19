@@ -5,7 +5,11 @@ export async function apiFetch<T>(
   options?: RequestInit,
 ): Promise<T> {
   try {
-    const res = await fetch(`${env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+    const baseUrl = endpoint.startsWith("/api/auth")
+      ? env.NEXT_PUBLIC_AUTH_URL
+      : env.NEXT_PUBLIC_API_URL;
+
+    const res = await fetch(`${baseUrl}${endpoint}`, {
       credentials: "include",
       headers: {
         "Content-Type": "Application/json",

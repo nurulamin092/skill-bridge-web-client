@@ -1,5 +1,11 @@
-import { apiFetch } from "@/lib/api";
-import { LoginResponse } from "../types/auth.types";
+import {
+  BetterAuthUser,
+  hasRole,
+  isAuthUser,
+  LoginResponse,
+  Role,
+} from "../types/auth.types";
+import { authClient } from "@/lib/auth-client";
 
 interface LoginPayload {
   email: string;
@@ -7,8 +13,30 @@ interface LoginPayload {
 }
 
 export async function login(data: LoginPayload): Promise<LoginResponse> {
-  return apiFetch<LoginResponse>("/auth/login", {
-    method: "POST",
-    body: JSON.stringify(data),
+  const { data: result, error } = await authClient.signIn.email({
+    email: data.email,
+    password: data.password,
   });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!result.user) {
+    throw new Error("Login failed:No user data received");
+  }
+  if (!isAuthUser(result.user)) {
+    throw new Error("Login failed:No user data received");
+  }
+
+  const user = result.user as BetterAuthUser;
+  const role: Role = hasRole(user) ? user.role : "STUDENT";
+
+  return {
+    user: {
+      id: result?.user?.id,
+      email: result?.user?.email,
+      role: role,
+    },
+  };
 }
