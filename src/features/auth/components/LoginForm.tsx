@@ -35,6 +35,10 @@ export function LoginForm({
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = (data: LoginFormValues) => {
@@ -60,6 +64,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="m@example.com"
                   {...register("email")}
                   disabled={isPending}
@@ -84,6 +89,7 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
+                  autoComplete="current-password"
                   {...register("password")}
                   disabled={isPending}
                 />

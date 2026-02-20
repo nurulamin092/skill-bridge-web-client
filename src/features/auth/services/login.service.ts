@@ -22,7 +22,7 @@ export async function login(data: LoginPayload): Promise<LoginResponse> {
     throw new Error(error.message);
   }
 
-  if (!result.user) {
+  if (!result || !result.user) {
     throw new Error("Login failed:No user data received");
   }
   if (!isAuthUser(result.user)) {
@@ -34,8 +34,8 @@ export async function login(data: LoginPayload): Promise<LoginResponse> {
 
   return {
     user: {
-      id: result?.user?.id,
-      email: result?.user?.email,
+      id: user.id,
+      email: user.email,
       role: role,
     },
   };

@@ -16,8 +16,10 @@ export function useLogin() {
       else router.push("/student");
       toast.success("Login successful");
     },
-    onError: (error) => {
-      toast.error(error.message || "Login failed");
+    onError: (error: unknown) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Login failed";
+      toast.error(errorMessage);
     },
   });
 }
