@@ -1,69 +1,117 @@
 "use client";
-
-import * as React from "react";
+import {
+  Calendar,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-type Role = "STUDENT" | "TUTOR" | "ADMIN";
+const sidebarItems = [
+  {
+    title: "Dashboard",
+    href: "/student",
+    icon: Home,
+  },
+  {
+    title: "Upcoming Sessions",
+    href: "/student/bookings/upcoming",
+    icon: Calendar,
+  },
+  {
+    title: "Past Sessions",
+    href: "/student/bookings/past",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "All Bookings",
+    href: "/student/bookings",
+    icon: Calendar,
+  },
+  {
+    title: "Profile",
+    href: "/student/profile",
+    icon: User,
+  },
+  {
+    title: "Settings",
+    href: "/student/settings",
+    icon: Settings,
+  },
+];
 
-const role: Role = "STUDENT";
-
-const menuData: Record<Role, { title: string; url: string }[]> = {
-  STUDENT: [
-    { title: "Dashboard", url: "/student" },
-    { title: "Courses", url: "/student/courses" },
-  ],
-  TUTOR: [
-    { title: "Dashboard", url: "/tutor" },
-    { title: "My Students", url: "/tutor/students" },
-  ],
-  ADMIN: [
-    { title: "Dashboard", url: "/admin" },
-    { title: "Users", url: "/admin/users" },
-  ],
-};
-
-export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar() {
   const pathname = usePathname();
-  const items = menuData[role];
+  const { user, logout } = useAuth();
+
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase() || "U";
 
   return (
-    <Sidebar {...props}>
-      <SidebarHeader>
-        <div className="px-2 py-2 font-semibold text-lg">{role} PANEL</div>
+    <Sidebar>
+      <SidebarHeader className="p-4">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-primary" />
+          <span className="font-semibold">SkillBridge</span>
+        </div>
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link href={item.url}>{item.title}</Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <SidebarMenu>
+          {sidebarItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+
+            return (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton asChild isActive={isActive}>
+                  <Link href={item.href}>
+                    <Icon className="h-4 w-4" />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
       </SidebarContent>
 
-      <SidebarRail />
+      <SidebarFooter className="p-4">
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarImage src={user?.image} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <div className="flex-1 overflow-hidden">
+            <p className="truncate text-sm font-medium">{user?.name}</p>
+            <p className="truncate text-xs text-muted-foreground">
+              {user?.email}
+            </p>
+          </div>
+          <Button variant="ghost" size="icon" onClick={() => logout()}>
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
