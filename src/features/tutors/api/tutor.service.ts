@@ -5,6 +5,7 @@ export const getTutors = async (
   params?: TutorQueryParams,
 ): Promise<Tutor[]> => {
   const query = new URLSearchParams();
+
   if (params?.category) {
     query.append("category", params.category);
   }

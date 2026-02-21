@@ -1,9 +1,15 @@
-import { Button } from "@/components/ui/button";
+import { FeaturedTutors } from "@/components/home/FeaturedTutors";
+import { HeroSection } from "@/components/home/HeroSection";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { Testimonials } from "@/components/home/Testimonials";
 
-export default async function Home() {
+export default async function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Button variant={"outline"}>Click me</Button>
-    </div>
+    <main>
+      <HeroSection />
+      <FeaturedTutors />
+      <HowItWorks />
+      <Testimonials />
+    </main>
   );
 }

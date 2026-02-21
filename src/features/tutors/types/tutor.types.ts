@@ -9,6 +9,7 @@ export interface Tutor {
   user: {
     id: string;
     name: string;
+    image?: string;
   };
 
   tutorCategories: {
@@ -25,6 +26,8 @@ export interface TutorCardData {
   hourlyRate: number;
   experience: number;
   rating: number;
+  image?: string | null;
+  bio?: string | null;
   categories: string[];
 }
 export interface SingleTutor {
@@ -38,7 +41,7 @@ export interface SingleTutor {
     id: string;
     name: string;
     email: string;
-    image?: string;
+    image?: string | null;
     phone?: string;
   };
 
@@ -73,4 +76,8 @@ export interface TutorQueryParams {
   minPrice?: number;
   maxPrice?: number;
   rating?: number;
+  featured?: boolean;
+  image?: string | null;
+  search?: string;
+  bio?: string | null;
 }
