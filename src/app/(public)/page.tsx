@@ -1,3 +1,4 @@
+import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { FeaturedTutors } from "@/components/home/FeaturedTutors";
 import { HeroSection } from "@/components/home/HeroSection";
 import { HowItWorks } from "@/components/home/HowItWorks";
@@ -8,6 +9,7 @@ export default async function HomePage() {
     <main>
       <HeroSection />
       <FeaturedTutors />
+      <CategoriesSection />
       <HowItWorks />
       <Testimonials />
     </main>
