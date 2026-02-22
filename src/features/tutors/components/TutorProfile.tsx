@@ -11,10 +11,11 @@ import { Star, Clock, DollarSign, Calendar, MessageSquare } from "lucide-react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRouter } from "next/navigation";
-// import { useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { SingleTutor } from "../types/tutor.types";
 import ReviewCard from "@/features/reviews/components/ReviewCard";
+import { BookingModal } from "@/features/bookings/components/BookingModal";
 
 interface TutorProfileProps {
   id: string;
@@ -24,6 +25,8 @@ export function TutorProfile({ id }: TutorProfileProps) {
   const { data: tutor, isLoading, error } = useTutor(id);
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
+
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   if (isLoading) return <div>Loading...</div>;
   if (error || !tutor) return <div>Tutor not found</div>;
@@ -44,6 +47,7 @@ export function TutorProfile({ id }: TutorProfileProps) {
       toast.error("Only student can book session");
       return;
     }
+    setIsBookingModalOpen(true);
   };
 
   return (
@@ -185,6 +189,12 @@ export function TutorProfile({ id }: TutorProfileProps) {
           </TabsContent>
         </Tabs>
       </div>
+
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        tutor={tutorData}
+      />
     </>
   );
 }
