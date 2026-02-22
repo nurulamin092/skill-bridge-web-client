@@ -19,6 +19,16 @@ export interface Tutor {
       slug: string;
     };
   }[];
+  reviews?: {
+    id: string;
+    rating: number;
+    comment: string;
+    student: {
+      id: string;
+      name: string;
+      image?: string;
+    };
+  };
 }
 export interface TutorCardData {
   id: string;

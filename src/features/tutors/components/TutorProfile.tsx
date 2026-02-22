@@ -6,11 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-import { Star, Clock, DollarSign, Calendar } from "lucide-react";
+import { format } from "date-fns";
+import { Star, Clock, DollarSign, Calendar, MessageSquare } from "lucide-react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRouter } from "next/navigation";
+// import { useState } from "react";
+import { toast } from "sonner";
+import { SingleTutor } from "../types/tutor.types";
+import ReviewCard from "@/features/reviews/components/ReviewCard";
 
 interface TutorProfileProps {
   id: string;
@@ -24,6 +28,7 @@ export function TutorProfile({ id }: TutorProfileProps) {
   if (isLoading) return <div>Loading...</div>;
   if (error || !tutor) return <div>Tutor not found</div>;
 
+  const tutorData = tutor as SingleTutor;
   const initials = tutor.user.name
     .split(" ")
     .map((n) => n[0])
@@ -36,6 +41,7 @@ export function TutorProfile({ id }: TutorProfileProps) {
       return;
     }
     if (user?.role !== "STUDENT") {
+      toast.error("Only student can book session");
       return;
     }
   };
@@ -43,42 +49,44 @@ export function TutorProfile({ id }: TutorProfileProps) {
   return (
     <>
       <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
-        <div className="`bg-linear-to-r from-primary/10 to-secondary/10 rounded-lg p-8 mb-8">
+        <div className="bg-linear-to-r from-primary/10 to-secondary/10 rounded-lg p-8 mb-8">
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <Avatar className="h-24 w-24 border-4 border-background">
-              <AvatarImage src={tutor.user.image || ""} alt={tutor.user.name} />
+              <AvatarImage
+                src={tutorData.user.image || ""}
+                alt={tutorData.user.name}
+              />
               <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
             </Avatar>
 
             <div className="flex-1">
-              <h1 className="text-3xl font-bold mb-2">{tutor.user.name}</h1>
+              <h1 className="text-3xl font-bold mb-2">{tutorData.user.name}</h1>
 
               <div className="flex flex-wrap gap-4 mb-4">
                 <div className="flex items-center gap-1">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">
-                    {tutor.avgRating.toFixed(1)}
+                    {tutorData.avgRating.toFixed(1)}
                   </span>
                   <span className="text-muted-foreground">
-                    {/* ({tutor.reviews?.length || 0} reviews) */}
+                    ({tutorData.reviews?.length || 0} reviews)
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-5 w-5 text-muted-foreground" />
-                  <span>{tutor.experience}+ years experience</span>
+                  <span>{tutorData.experience}+ years experience</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <DollarSign className="h-5 w-5 text-muted-foreground" />
                   <span className="font-semibold text-primary">
-                    ${tutor.hourlyRate}
+                    ${tutorData.hourlyRate}
                   </span>
                   <span className="text-muted-foreground">/hour</span>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
-                {tutor.tutorCategories.map((tc) => (
+                {tutorData.tutorCategories.map((tc) => (
                   <Badge key={tc.category.id} variant="secondary">
                     {tc.category.name}
                   </Badge>
@@ -97,7 +105,6 @@ export function TutorProfile({ id }: TutorProfileProps) {
           </div>
         </div>
 
-        {/* Content Tabs */}
         <Tabs defaultValue="about" className="space-y-4">
           <TabsList>
             <TabsTrigger value="about">About</TabsTrigger>
@@ -108,11 +115,11 @@ export function TutorProfile({ id }: TutorProfileProps) {
           <TabsContent value="about" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>About {tutor.user.name}</CardTitle>
+                <CardTitle>About {tutorData.user.name}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="whitespace-pre-line">
-                  {tutor.bio || "No bio provided."}
+                  {tutorData.bio || "No bio provided."}
                 </p>
               </CardContent>
             </Card>
@@ -123,10 +130,10 @@ export function TutorProfile({ id }: TutorProfileProps) {
               <CardHeader>
                 <CardTitle>Available Time Slots</CardTitle>
               </CardHeader>
-              {/* <CardContent>
-                {tutor.availabilities?.length > 0 ? (
+              <CardContent>
+                {tutorData.availabilities?.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {tutor.availabilities.map((slot) => (
+                    {tutorData.availabilities.map((slot) => (
                       <Card key={slot.id} className="p-4">
                         <div className="flex justify-between items-center">
                           <div>
@@ -140,7 +147,7 @@ export function TutorProfile({ id }: TutorProfileProps) {
                           </div>
                           <Button
                             size="sm"
-                            onClick={() => handleBookSession()}
+                            onClick={handleBookSession}
                             disabled={
                               !isAuthenticated || user?.role !== "STUDENT"
                             }
@@ -156,14 +163,14 @@ export function TutorProfile({ id }: TutorProfileProps) {
                     No available slots at the moment.
                   </p>
                 )}
-              </CardContent> */}
+              </CardContent>
             </Card>
           </TabsContent>
 
-          {/* <TabsContent value="reviews" className="space-y-4">
-            {tutor.reviews?.length > 0 ? (
+          <TabsContent value="reviews" className="space-y-4">
+            {tutorData.reviews && tutorData.reviews.length > 0 ? (
               <div className="space-y-4">
-                {tutor.reviews.map((review) => (
+                {tutorData.reviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
@@ -175,16 +182,9 @@ export function TutorProfile({ id }: TutorProfileProps) {
                 </CardContent>
               </Card>
             )}
-          </TabsContent> */}
+          </TabsContent>
         </Tabs>
       </div>
-
-      {/* Booking Modal */}
-      {/* <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        tutor={tutor}
-      /> */}
     </>
   );
 }

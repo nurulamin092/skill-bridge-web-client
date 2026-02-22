@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import { Tutor, TutorQueryParams } from "../types/tutor.types";
+import { SingleTutor, Tutor, TutorQueryParams } from "../types/tutor.types";
 
 export const getTutors = async (
   params?: TutorQueryParams,
@@ -28,8 +28,8 @@ export const getTutors = async (
   return response.data;
 };
 
-export const getTutorById = async (id: string): Promise<Tutor> => {
-  const response = await apiFetch<{ success: boolean; data: Tutor }>(
+export const getTutorById = async (id: string): Promise<SingleTutor> => {
+  const response = await apiFetch<{ success: boolean; data: SingleTutor }>(
     `/tutors/${id}`,
   );
   return response.data;
