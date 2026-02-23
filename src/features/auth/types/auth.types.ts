@@ -3,7 +3,7 @@ export type Role = "STUDENT" | "TUTOR" | "ADMIN";
 export type AuthUser = {
   id: string;
   email: string;
-  name?: string;
+  name: string;
   phone?: string;
   image?: string;
   role: Role;
@@ -32,6 +32,7 @@ export interface LoginResponse {
 export interface AuthSession {
   user: AuthUser;
 }
+// export type BetterAuthUserWithName = BetterAuthUser & { name: string };
 
 export function isAuthUser(user: unknown): user is BetterAuthUser {
   if (!user || typeof user !== "object") return false;

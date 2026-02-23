@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cancelBooking, getMyBookings } from "../services/booking.service";
 import { toast } from "sonner";
 
-export const useMyBooking = () => {
+export const useMyBookings = () => {
   return useQuery({
     queryKey: ["my-booking"],
     queryFn: getMyBookings,

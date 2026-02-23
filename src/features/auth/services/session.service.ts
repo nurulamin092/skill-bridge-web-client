@@ -1,9 +1,4 @@
-import {
-  AuthSession,
-  BetterAuthUser,
-  hasRole,
-  isAuthUser,
-} from "../types/auth.types";
+import { AuthSession, hasRole, isAuthUser } from "../types/auth.types";
 import { authClient } from "@/lib/auth-client";
 
 export async function getSession(): Promise<AuthSession | null> {
@@ -18,7 +13,8 @@ export async function getSession(): Promise<AuthSession | null> {
       return null;
     }
 
-    const user = session.user as BetterAuthUser;
+    const user = session.user;
+
     return {
       user: {
         id: user.id,
@@ -29,7 +25,8 @@ export async function getSession(): Promise<AuthSession | null> {
         role: hasRole(user) ? user.role : "STUDENT",
       },
     };
-  } catch {
+  } catch (error) {
+    console.error("Session error:", error);
     return null;
   }
 }

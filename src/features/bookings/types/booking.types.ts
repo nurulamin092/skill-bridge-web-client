@@ -2,12 +2,13 @@ export interface Availability {
   id: string;
   startTime: string;
   endTime: string;
-  isBooking: string;
+  isBooked: string;
 }
 
 export interface Booking {
   id: string;
   status: "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+  priceSnapshot: number;
   createdAt: string;
   student: {
     id: string;
@@ -21,6 +22,11 @@ export interface Booking {
     };
   };
   availability: Availability;
+  review?: {
+    id: string;
+    rating: number;
+    comment?: string;
+  };
 }
 
 export interface CreateBookingPayload {

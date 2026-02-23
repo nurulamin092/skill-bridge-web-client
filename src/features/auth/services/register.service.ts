@@ -6,6 +6,7 @@ export async function register(data: RegisterFormValues) {
     email: data.email,
     password: data.password,
     name: data.name,
+
     callbackURL: `${window.location.origin}/login?verified=true`,
   });
   if (error) {

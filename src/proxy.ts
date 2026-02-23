@@ -7,23 +7,37 @@ const PUBLIC_ROUTES = [
   "/login",
   "/register",
   "/tutors",
-  "/tutors/",
   "/unauthorized",
   "/verify-email",
 ];
 
 const AUTH_ROUTES = ["/login", "/register"];
 
-const ROLE_ROUTES = {
+const ROLE_ROUTES: Record<Role, string[]> = {
   ADMIN: ["/admin"],
-  TUTOR: ["/tutor", "/tutor/"],
-  STUDENT: ["/student", "/dashboard"],
-} as const;
+  TUTOR: ["/tutor"],
+  STUDENT: ["/student"],
+};
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+};
 
 function isValidRole(role: unknown): role is Role {
   return (
     typeof role === "string" && ["STUDENT", "TUTOR", "ADMIN"].includes(role)
   );
+}
+
+function getDashboardUrl(role: Role) {
+  return ROLE_ROUTES[role]?.[0] ?? "/";
+}
+
+function checkRoleAccess(pathname: string, role: Role): boolean {
+  const allowed = ROLE_ROUTES[role] ?? [];
+  return allowed.some((route) => pathname.startsWith(route));
 }
 
 export async function proxy(request: NextRequest) {
@@ -38,11 +52,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  console.log(`[Middleware] Path: ${pathname}`);
+
   const session = await getSessionFromCookie(request);
+  console.log(`[Middleware] Session: ${session ? "exists" : "none"}`);
 
   if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
     if (AUTH_ROUTES.includes(pathname) && session) {
-      const role = session.user.role;
+      const role = session.user.role?.toUpperCase();
       if (isValidRole(role)) {
         return NextResponse.redirect(
           new URL(getDashboardUrl(role), request.url),
@@ -58,45 +75,16 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const role = session.user.role;
-
+  const role = session.user.role?.toUpperCase();
   if (!isValidRole(role)) {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
+    console.warn(`[Middleware] Invalid role detected: ${role}`);
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  const hasAccess = checkRoleAccess(pathname, role);
-  if (!hasAccess) {
+  if (!checkRoleAccess(pathname, role)) {
+    console.warn(`[Middleware] No access for role ${role} to ${pathname}`);
     return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
-
-  if (pathname === "/dashboard" && role === "STUDENT") {
-    return NextResponse.redirect(new URL("/student", request.url));
   }
 
   return NextResponse.next();
 }
-
-function checkRoleAccess(pathname: string, role: Role): boolean {
-  const allowedRoutes = ROLE_ROUTES[role] || [];
-  return allowedRoutes.some((route) => pathname.startsWith(route));
-}
-
-function getDashboardUrl(role: Role): string {
-  switch (role) {
-    case "ADMIN":
-      return "/admin";
-    case "TUTOR":
-      return "/tutor";
-    case "STUDENT":
-      return "/student";
-    default:
-      return "/";
-  }
-}
-
-export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
-};
