@@ -22,16 +22,16 @@ export async function getServerSession(): Promise<AuthSession | null> {
       cache: "no-store",
     });
 
-    console.log("[getServerSession] Status:", response.status);
+    console.log("getServerSessionStatus:", response.status);
 
     if (!response.ok) {
-      console.log("[getServerSession] Failed");
+      console.log("getServerSession Failed");
       return null;
     }
 
     const result = await response.json();
 
-    console.log("[getServerSession] Raw data:", result);
+    console.log("getServerSession Raw data:", result);
 
     let user = null;
 
@@ -44,7 +44,7 @@ export async function getServerSession(): Promise<AuthSession | null> {
     }
 
     if (!user) {
-      console.log("[getServerSession] No user");
+      console.log("getServerSession No user");
       return null;
     }
 
@@ -62,7 +62,7 @@ export async function getServerSession(): Promise<AuthSession | null> {
       },
     };
   } catch (error) {
-    console.error("[getServerSession] Error:", error);
+    console.error("getServerSession Error:", error);
     return null;
   }
 }
