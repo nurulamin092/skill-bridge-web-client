@@ -6,6 +6,8 @@ import { Calendar, Clock, Star, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BookingList } from "@/features/bookings/components/BookingList";
 
 interface StudentDashboardClientProps {
   user: {
@@ -100,17 +102,20 @@ export function StudentDashboardClient({ user }: StudentDashboardClientProps) {
         })}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Upcoming Sessions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {upcomingBookings.length > 0 ? (
+      {upcomingBookings.length > 0 && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Next Sessions</CardTitle>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/student/upcoming">View All</Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
             <div className="space-y-4">
               {upcomingBookings.slice(0, 3).map((booking) => (
                 <div
                   key={booking.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                 >
                   <div>
                     <p className="font-medium">{booking.tutor.user.name}</p>
@@ -125,28 +130,38 @@ export function StudentDashboardClient({ user }: StudentDashboardClientProps) {
                   </div>
                   <Button variant="outline" size="sm" asChild>
                     <Link href={`/student/bookings/${booking.id}`}>
-                      View Details
+                      Details
                     </Link>
                   </Button>
                 </div>
               ))}
-              {upcomingBookings.length > 3 && (
-                <Button variant="link" asChild className="w-full">
-                  <Link href="/student/upcoming">View All Sessions →</Link>
-                </Button>
-              )}
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <Calendar className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-muted-foreground">No upcoming sessions</p>
-              <Button asChild className="mt-4">
-                <Link href="/tutors">Find a Tutor</Link>
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold">All Sessions</h2>
+        <Tabs defaultValue="upcoming" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+            <TabsTrigger value="past">Past Sessions</TabsTrigger>
+            <TabsTrigger value="all">All Bookings</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="upcoming">
+            <BookingList filter="upcoming" />
+          </TabsContent>
+
+          <TabsContent value="past">
+            <BookingList filter="past" />
+          </TabsContent>
+
+          <TabsContent value="all">
+            <BookingList filter="all" />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
