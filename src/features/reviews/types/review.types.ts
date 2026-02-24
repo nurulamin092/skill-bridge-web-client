@@ -1,5 +1,6 @@
 export interface ReviewCardProps {
   review: Review;
+  showTutor?: boolean;
 }
 
 export interface Review {
