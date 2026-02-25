@@ -20,6 +20,14 @@ export type BetterAuthUser = {
   updatedAt: Date;
   role: Role;
 };
+export interface TutorProfile {
+  id: string;
+  bio?: string | null;
+  hourlyRate: number;
+  experience: number;
+  avgRating: number;
+  isApproved: boolean;
+}
 
 export interface LoginResponse {
   user: {
@@ -31,6 +39,7 @@ export interface LoginResponse {
 
 export interface AuthSession {
   user: AuthUser;
+  tutorProfile?: TutorProfile | null;
 }
 
 export function isAuthUser(user: unknown): user is BetterAuthUser {

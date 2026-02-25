@@ -6,63 +6,46 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export async function getServerSession(): Promise<AuthSession | null> {
   try {
     const cookie = (await headers()).get("cookie") || "";
-
-    console.log("[getServerSession] Cookie exists:", !!cookie);
-
     if (!API_URL) {
-      console.error("[getServerSession] API_URL is missing");
       return null;
     }
 
-    const response = await fetch(`${API_URL}/auth/session`, {
+    const url = `${API_URL}/auth/me`;
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         Cookie: cookie,
+        "Content-Type": "application/json",
       },
       cache: "no-store",
     });
 
-    console.log("getServerSessionStatus:", response.status);
-
     if (!response.ok) {
-      console.log("getServerSession Failed");
       return null;
     }
 
     const result = await response.json();
 
-    console.log("getServerSession Raw data:", result);
-
-    let user = null;
-
-    if (result?.user) {
-      user = result.user;
-    } else if (result?.data?.user) {
-      user = result.data.user;
-    } else if (result?.data?.id) {
-      user = result.data;
-    }
-
-    if (!user) {
-      console.log("getServerSession No user");
+    if (!result?.success || !result?.data) {
       return null;
     }
 
-    const role =
-      typeof user.role === "string" ? user.role.toUpperCase() : "STUDENT";
+    const userData = result.data;
+    const role = userData.role?.toUpperCase() || "STUDENT";
 
     return {
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name || "",
-        phone: user.phone || "",
-        image: user.image || "",
+        id: userData.id,
+        email: userData.email,
+        name: userData.name || "",
+        phone: userData.phone || "",
+        image: userData.image || "",
         role,
       },
     };
   } catch (error) {
-    console.error("getServerSession Error:", error);
+    console.error("ServerSession Error:", error);
     return null;
   }
 }

@@ -7,59 +7,53 @@ export async function getSessionFromCookie(
 ): Promise<AuthSession | null> {
   try {
     const cookie = request.headers.get("cookie");
-    console.log("[getSessionFromCookie] Cookie exists:", !!cookie);
-    console.log(
-      "[getSessionFromCookie] Cookie string:",
-      cookie?.substring(0, 100) + "...",
-    );
 
-    const baseUrl = env.NEXT_PUBLIC_AUTH_URL;
+    const apiUrl = env.NEXT_PUBLIC_API_URL;
+    console.log("API URL:", apiUrl);
 
-    const sessionUlr = baseUrl.includes("/api/auth")
-      ? `${baseUrl}/session`
-      : `${baseUrl}/api/auth/session`;
+    const sessionUrl = `${apiUrl}/auth/me`;
+    console.log("Fetching from:", sessionUrl);
 
-    console.log("[Session] Fetching from:", sessionUlr);
-
-    const response = await fetch(sessionUlr, {
+    const response = await fetch(sessionUrl, {
       headers: {
         Cookie: cookie || "",
+        "Content-Type": "application/json",
       },
       credentials: "include",
       cache: "no-store",
     });
-    console.log("[getSessionFromCookie] Response status:", response.status);
+
+    console.log("Response status:", response.status);
 
     if (!response.ok) {
-      console.log(
-        "[getSessionFromCookie] Failed with status:",
-        response.status,
-      );
+      const text = await response.text();
+      console.log("Error response:", text);
       return null;
     }
 
     const data = await response.json();
+    console.log("Data received:", data ? "yes" : "no");
 
-    console.log("[getSessionFromCookie] Data received:", !!data);
-
-    if (!data || !data.user) {
-      console.log("[getSessionFromCookie] No user in data");
+    if (!data?.success || !data?.data) {
+      console.log("Invalid response format");
       return null;
     }
 
-    const role = data.user.role?.toUpperCase() || "STUDENT";
+    const userData = data.data;
+    console.log("User role from response:", userData.role);
+
     return {
       user: {
-        id: data.user.id,
-        email: data.user.email,
-        name: data.user.name,
-        phone: data.user.phone || "",
-        image: data.user.image || "",
-        role,
+        id: userData.id,
+        email: userData.email,
+        name: userData.name || "",
+        phone: userData.phone || "",
+        image: userData.image || "",
+        role: userData.role?.toUpperCase() || "STUDENT",
       },
     };
   } catch (error) {
-    console.error("Session fetch error:", error);
+    console.error("Error in getSessionFromCookie:", error);
     return null;
   }
 }

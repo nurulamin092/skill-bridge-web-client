@@ -14,7 +14,6 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(null);
-
   const [loading, setLoading] = useState(true);
 
   async function refresh() {
@@ -37,18 +36,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
     };
   }, []);
+
   return (
-    <AuthContext.Provider value={{ session, loading, refresh: refresh }}>
+    <AuthContext.Provider value={{ session, loading, refresh }}>
       {children}
     </AuthContext.Provider>
   );
 }
-
 export function useAuthContext() {
   const context = useContext(AuthContext);
-
   if (!context) {
-    throw new Error("useAthContext must be used AuthProvider");
+    throw new Error("useAuthContext must be used within AuthProvider");
   }
   return context;
 }
