@@ -32,8 +32,13 @@ export async function getSession(): Promise<AuthSession | null> {
 }
 
 export async function logout() {
-  const { error } = await authClient.signOut();
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const { error } = await authClient.signOut();
+    if (error) {
+      throw new Error(error.message);
+    }
+  } catch (error) {
+    console.error("Logout service error:", error);
+    throw error;
   }
 }

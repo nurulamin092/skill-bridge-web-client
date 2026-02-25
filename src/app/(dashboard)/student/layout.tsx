@@ -3,13 +3,8 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { StudentSidebar } from "@/features/students/components/StudentSidebar";
-import { ModeToggle } from "@/components/layout/ModeToggle";
 
 export default function StudentLayout({
   children,
@@ -38,19 +33,16 @@ export default function StudentLayout({
   }
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <StudentSidebar />
-        <SidebarInset>
-          <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
+        <main className="flex-1">
+          <div className="lg:hidden p-4">
             <SidebarTrigger />
-            <div className="flex-1" />
-            <ModeToggle />
-          </header>
-          <main className="flex-1 p-6">
-            <div className="max-w-7xl mx-auto">{children}</div>
-          </main>
-        </SidebarInset>
+          </div>
+
+          <div className="p-6">{children}</div>
+        </main>
       </div>
     </SidebarProvider>
   );

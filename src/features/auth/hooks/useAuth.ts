@@ -15,7 +15,8 @@ export function useAuth() {
       await refresh();
       router.push("/login");
       toast.success("Logged out successfully");
-    } catch {
+    } catch (error) {
+      console.error("Logout error:", error);
       toast.error("Failed to logout");
     }
   };
@@ -23,7 +24,6 @@ export function useAuth() {
   return {
     session,
     user: session?.user ?? null,
-
     role: session?.user.role ?? null,
     isAuthenticated: !!session,
     loading,
