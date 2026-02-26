@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { AdminStats } from "../types/admin.type";
+import { AdminStats } from "../types/admin.types";
 import { apiFetch } from "@/lib/api";
 
 export const useAdminStats = () => {

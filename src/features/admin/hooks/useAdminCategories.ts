@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Category } from "../types/admin.type";
+import { Category } from "../types/admin.types";
 import { apiFetch } from "@/lib/api";
 import { toast } from "sonner";
 

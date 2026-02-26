@@ -1,6 +1,5 @@
 "use client";
 
-import { useAdminStats } from "../hooks/useAdminStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users,
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { useAdminStats } from "../hooks/useAdminStats";
 
 export function AdminDashboard() {
   const { data: stats, isLoading, error } = useAdminStats();

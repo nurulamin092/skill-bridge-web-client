@@ -68,3 +68,33 @@ export interface Category {
   slug: string;
   createdAt?: string;
 }
+
+export interface DeleteCategoryDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  category: Category | null;
+  onConfirm: () => void;
+  loading?: boolean;
+}
+export interface CategoryFormData {
+  name: string;
+  slug: string;
+}
+
+export interface CategoryFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  formData: CategoryFormData;
+  setFormData: React.Dispatch<React.SetStateAction<CategoryFormData>>;
+  onNameChange: (name: string) => void;
+  onSubmit: () => void;
+  loading?: boolean;
+}
+export interface CategoryTableProps {
+  data: Category[];
+  isLoading: boolean;
+  error: unknown;
+  onEdit: (category: Category) => void;
+  onDelete: (category: Category) => void;
+}
