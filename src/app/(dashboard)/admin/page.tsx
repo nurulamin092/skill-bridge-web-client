@@ -1,4 +1,4 @@
-import { AdminDashboard } from "@/features/admin/components/AdminDashboard";
+import { AdminDashboard } from "@/features/admin/components/AdminDashboard/index";
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 
