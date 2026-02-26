@@ -1,4 +1,4 @@
-import { CategoryManagement } from "@/features/admin/components/CategoryManagement";
+import { CategoryManagement } from "@/features/admin/components/CategoryManagement/index";
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 
