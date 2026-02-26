@@ -1,10 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import { apiFetch } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { User } from "better-auth/types";
 import { toast } from "sonner";
 
-export const useUsers = () => {
+export const useAdminUsers = () => {
   return useQuery({
     queryKey: ["admin-users"],
     queryFn: async (): Promise<User[]> => {
@@ -15,19 +14,20 @@ export const useUsers = () => {
     },
   });
 };
+
 export const useUpdateUserStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
-      tutorId,
+      userId,
       isBanned,
     }: {
-      tutorId: string;
+      userId: string;
       isBanned: boolean;
     }) => {
       const response = await apiFetch<{ success: boolean; data: User }>(
-        `/admin/users/${tutorId}/status`,
+        `/admin/users/${userId}/status`, // URL এ userId use করুন
         {
           method: "PATCH",
           body: JSON.stringify({ isBanned }),
@@ -45,13 +45,14 @@ export const useUpdateUserStatus = () => {
     },
   });
 };
+
 export const useApproveTutor = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (tutorId: string) => {
       const response = await apiFetch<{ success: boolean; data: User }>(
-        `/admin/users/${tutorId}/status`,
+        `/admin/tutor/${tutorId}/approved`,
         {
           method: "PATCH",
         },
@@ -61,10 +62,10 @@ export const useApproveTutor = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      toast.success("User status updated successfully");
+      toast.success("Tutor approved successfully");
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to update user status");
+      toast.error(error.message || "Failed to approve tutor");
     },
   });
 };
