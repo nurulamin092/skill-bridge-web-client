@@ -61,7 +61,6 @@ export interface AdminStats {
     tutorCount: number;
   }>;
 }
-
 export interface Category {
   id: string;
   name: string;
