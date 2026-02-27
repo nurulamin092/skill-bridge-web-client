@@ -7,17 +7,17 @@ import {
   useApproveTutor,
   AdminUser,
 } from "../../hooks/useAdminUsers";
-import { PageHeader } from "../common/PageHeader";
-import { SearchFilter } from "../common/SearchFilter";
-import { RefreshButton } from "../common/RefreshButton";
-import { LoadingSkeleton } from "../common/LoadingSkeleton";
-import { ErrorState } from "../common/ErrorState";
-import { EmptyState } from "../common/EmptyState";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { UserDetailsDialog } from "./UserDetailsDialog";
 import { UserTable } from "./UserTable";
+import { LoadingSkeleton } from "@/components/common/feedback/LoadingSkeleton";
+import { ErrorState } from "@/components/common/feedback/ErrorState";
+import { PageHeader } from "@/components/common/layout/PageHeader";
+import { RefreshButton } from "../common/RefreshButton";
+import { SearchFilter } from "@/components/common/data/SearchFilter";
+import { EmptyState } from "@/components/common/feedback/EmptyState";
 
 export function UserManagement() {
   const [search, setSearch] = useState("");

@@ -7,20 +7,21 @@ import {
   useUpdateCategory,
   useDeleteCategory,
 } from "../../hooks/useAdminCategories";
-import { PageHeader } from "../common/PageHeader";
-import { SearchFilter } from "../common/SearchFilter";
-import { LoadingSkeleton } from "../common/LoadingSkeleton";
-import { ErrorState } from "../common/ErrorState";
-import { EmptyState } from "../common/EmptyState";
-import { CategoryTable } from "./CategoryTable";
-import { CreateCategoryDialog } from "./CreateCategoryDialog";
-import { EditCategoryDialog } from "./EditCategoryDialog";
-import { ConfirmDialog } from "../common/ConfirmDialog";
+
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Category } from "../../types/admin.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { LoadingSkeleton } from "@/components/common/feedback/LoadingSkeleton";
+import { ErrorState } from "@/components/common/feedback/ErrorState";
+import { PageHeader } from "@/components/common/layout/PageHeader";
+import { SearchFilter } from "@/components/common/data/SearchFilter";
+import { EmptyState } from "@/components/common/feedback/EmptyState";
+import { CategoryTable } from "./CategoryTable";
+import { CreateCategoryDialog } from "./CreateCategoryDialog";
+import { EditCategoryDialog } from "./EditCategoryDialog";
+import { ConfirmDialog } from "@/components/common/feedback/ConfirmDialog";
 
 export function CategoryManagement() {
   const [search, setSearch] = useState("");

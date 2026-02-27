@@ -5,17 +5,18 @@ import {
   useAdminBookings,
   useCancelBooking,
 } from "../../hooks/useAdminBookings";
-import { PageHeader } from "../common/PageHeader";
-import { SearchFilter } from "../common/SearchFilter";
-import { LoadingSkeleton } from "../common/LoadingSkeleton";
-import { ErrorState } from "../common/ErrorState";
-import { EmptyState } from "../common/EmptyState";
+
 import { BookingTable } from "./BookingTable";
 import { BookingDetailsDialog } from "./BookingDetailsDialog";
 import { Booking } from "./types";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { RefreshButton } from "../common/RefreshButton";
+import { LoadingSkeleton } from "@/components/common/feedback/LoadingSkeleton";
+import { ErrorState } from "@/components/common/feedback/ErrorState";
+import { PageHeader } from "@/components/common/layout/PageHeader";
+import { SearchFilter } from "@/components/common/data/SearchFilter";
+import { EmptyState } from "@/components/common/feedback/EmptyState";
 
 export function BookingManagement() {
   const [search, setSearch] = useState("");
