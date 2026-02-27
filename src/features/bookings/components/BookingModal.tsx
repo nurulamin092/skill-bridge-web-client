@@ -168,7 +168,6 @@ export function BookingModal({ isOpen, onClose, tutor }: BookingModalProps) {
               </Popover>
             </div>
 
-            {/* Time Slots */}
             {selectedDate && (
               <div className="space-y-2">
                 <label className="text-sm font-medium">

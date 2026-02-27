@@ -82,7 +82,7 @@ export function UserTableRow({
               <Button
                 size="sm"
                 variant="outline"
-                className="text-green-600 hover:text-green-700"
+                className="text-green-600 hover:text-green-700 border-green-200 hover:border-green-300"
                 onClick={() => onApproveTutor(user.tutorProfile!.id)}
                 disabled={isApproving}
               >
