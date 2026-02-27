@@ -1,6 +1,6 @@
+import { TutorDashboard } from "@/features/tutors/components/TutorDashboard/index";
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
-import { TutorDashboard } from "@/features/tutors/components/TutorDashboard";
 
 export default async function TutorDashboardPage() {
   const session = await getServerSession();
