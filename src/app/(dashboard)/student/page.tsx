@@ -1,6 +1,6 @@
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
-import { StudentDashboardClient } from "@/features/students/components/StudentDashboard";
+import { StudentDashboardClient } from "@/features/students/components/StudentDashboard/index";
 
 export default async function StudentDashboardPage() {
   const session = await getServerSession();
