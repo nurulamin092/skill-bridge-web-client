@@ -1,3 +1,5 @@
+import { CategoryTypes } from "@/features/categories/types/category.types";
+
 export interface Tutor {
   id: string;
   bio?: string | null;
@@ -90,4 +92,15 @@ export interface TutorQueryParams {
   image?: string | null;
   search?: string;
   bio?: string | null;
+}
+
+export interface TutorProfileData {
+  id: string;
+  bio: string | null;
+  hourlyRate: number;
+  experience: number;
+  isApproved: boolean;
+  tutorCategories: {
+    category: CategoryTypes;
+  }[];
 }

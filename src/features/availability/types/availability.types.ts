@@ -1,6 +1,11 @@
-export interface Availability {
+export interface AvailabilitySlot {
   id: string;
-  startDate: string;
-  endDate: string;
-  isBooked: string;
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
+}
+
+export interface CreateAvailabilityData {
+  startTime: string;
+  endTime: string;
 }
