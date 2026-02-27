@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -14,20 +15,23 @@ interface TutorCardProps {
 
 export default function TutorCard({ tutor }: TutorCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle>{tutor.name}</CardTitle>
-        <CardDescription>
-          Hourly Rate: ${tutor.hourlyRate} | Experience: {tutor.experience} yrs
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-2">
-          {tutor.categories.map((cat) => (
-            <Badge key={cat}>{cat}</Badge>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <Link href={`/tutors/${tutor.id}`} className="block">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+        <CardHeader>
+          <CardTitle>{tutor.name}</CardTitle>
+          <CardDescription>
+            Hourly Rate: ${tutor.hourlyRate} | Experience: {tutor.experience}{" "}
+            yrs
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            {tutor.categories.map((cat) => (
+              <Badge key={cat}>{cat}</Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

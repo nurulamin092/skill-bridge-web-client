@@ -12,7 +12,7 @@ import { AboutTab } from "./AboutTab";
 import { AvailabilityTab } from "./AvailabilityTab";
 import { ReviewsTab } from "./ReviewsTab";
 
-interface TutorProfileProps {
+export interface TutorProfileProps {
   id: string;
 }
 

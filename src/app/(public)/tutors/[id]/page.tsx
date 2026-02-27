@@ -6,10 +6,11 @@ interface PageProps {
   };
 }
 
-export default function TutorDetailsPage({ params }: PageProps) {
+export default async function TutorDetailsPage({ params }: PageProps) {
+  const { id } = await params;
   return (
     <div className="container mx-auto py-8">
-      <TutorProfile id={params.id} />
+      <TutorProfile id={id} />
     </div>
   );
 }
