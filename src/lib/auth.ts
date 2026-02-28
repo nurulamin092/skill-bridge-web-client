@@ -47,7 +47,6 @@ export async function getSessionFromCookie(
       return null;
     }
 
-    // ✅ Even if status is 403, if there's user data in the response, use it
     if (result?.data) {
       const userData = result.data;
       const role = userData.role?.toUpperCase() || "STUDENT";
@@ -68,11 +67,10 @@ export async function getSessionFromCookie(
       };
     }
 
-    // If no user data, then return null
     console.log("13. No user data in response");
     return null;
   } catch (error) {
-    console.error("❌ Error in getSessionFromCookie:", error);
+    console.error("Error in getSessionFromCookie:", error);
     return null;
   }
 }
