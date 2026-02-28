@@ -1,9 +1,11 @@
 "use client";
 
 import { useMyTutorReviews } from "../../hooks/useTutorReviews";
+import { useTutorProfile } from "../../hooks/useTutorProfile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, Calendar, Users } from "lucide-react";
+import { Star, Calendar, Users, AlertCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 import { PageHeader } from "@/components/common/layout/PageHeader";
 import { ErrorState } from "@/components/common/feedback/ErrorState";
@@ -13,7 +15,33 @@ import { SessionsTab } from "./SessionsTab";
 import { AvailabilityTab } from "./AvailabilityTab";
 
 export function TutorDashboard() {
-  const { data: reviews, isLoading, error, refetch } = useMyTutorReviews();
+  const { data: profile, isLoading: profileLoading } = useTutorProfile();
+
+  const {
+    data: reviews,
+    isLoading: reviewsLoading,
+    error,
+    refetch,
+  } = useMyTutorReviews({
+    enabled: profile?.isApproved === true,
+  });
+
+  const isLoading = profileLoading || (profile?.isApproved && reviewsLoading);
+
+  if (profile && !profile.isApproved) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <AlertCircle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
+          <h2 className="text-2xl font-bold mb-2">Profile Pending Approval</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Your tutor profile is currently under review by our admin team. You
+            &apos; ll be able to access all features once approved.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const totalReviews = reviews?.length || 0;
   const averageRating = reviews?.length

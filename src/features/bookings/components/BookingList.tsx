@@ -143,7 +143,6 @@ export function BookingList({ filter = "all" }: BookingListProps) {
     );
   }
 
-  // Filter logic
   const now = new Date();
   const filteredBookings = bookings.filter((booking) => {
     if (filter === "upcoming") {
@@ -257,11 +256,12 @@ export function BookingList({ filter = "all" }: BookingListProps) {
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/tutors/${booking.tutor.id}`}>View Tutor</Link>
                 </Button>
+                {/* ✅ Review button - only for completed bookings without review */}
                 {booking.status === "COMPLETED" && !booking.review && (
                   <Button size="sm" asChild variant="secondary">
                     <Link href={`/student/reviews/new?booking=${booking.id}`}>
                       <Star className="h-4 w-4 mr-1" />
-                      Review
+                      Leave Review
                     </Link>
                   </Button>
                 )}
@@ -312,12 +312,6 @@ export function BookingList({ filter = "all" }: BookingListProps) {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-              )}
-
-              {booking.status === "COMPLETED" && booking.review && (
-                <Badge variant="outline" className="text-green-600">
-                  Review Submitted
-                </Badge>
               )}
             </CardFooter>
           </Card>

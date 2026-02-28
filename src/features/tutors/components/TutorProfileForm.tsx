@@ -7,20 +7,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
+// Common Components
 import { LoadingSkeleton } from "@/components/common/feedback/LoadingSkeleton";
 import { ErrorState } from "@/components/common/feedback/ErrorState";
 import { FormActions } from "@/components/common/forms/FormActions";
 import { InfoCard } from "@/components/common/cards/InfoCard";
 
+// Types & Schemas
 import { CategoryTypes } from "@/features/categories/types/category.types";
 import { ProfileFormData, profileSchema } from "../schemas";
 
+// Hooks
 import { useTutorProfile } from "../hooks/useTutorProfile";
 import { useCategories } from "../hooks/useCategories";
 import { useUpdateProfile } from "../hooks/useUpdateProfile";
 import { useCreateProfile } from "../hooks/useCreateProfile";
 
+// Category Checkbox Component
 function CategoryCheckbox({
   category,
   checked,
@@ -49,8 +54,11 @@ function CategoryCheckbox({
   );
 }
 
+// Main Component
 export function TutorProfileForm() {
+  const router = useRouter();
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     data: profile,
@@ -70,6 +78,7 @@ export function TutorProfileForm() {
     register,
     handleSubmit,
     setValue,
+    reset, // ✅ Reset function যোগ করুন
     formState: { errors },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -89,10 +98,37 @@ export function TutorProfileForm() {
   const bioLength = profile?.bio?.length || 0;
 
   const onSubmit = async (data: ProfileFormData) => {
+    setIsSubmitting(true);
+
     if (isEditing) {
-      updateProfile.mutate(data);
+      updateProfile.mutate(data, {
+        onSuccess: () => {
+          // ✅ Success - redirect to dashboard
+          router.push("/tutor");
+        },
+        onSettled: () => {
+          setIsSubmitting(false);
+        },
+      });
     } else {
-      createProfile.mutate(data);
+      createProfile.mutate(data, {
+        onSuccess: () => {
+          // ✅ Reset form first
+          reset({
+            bio: "",
+            hourlyRate: 50,
+            experience: 0,
+            categoryIds: [],
+          });
+          setSelectedCategoryIds([]);
+
+          // ✅ Then redirect to dashboard
+          router.push("/tutor");
+        },
+        onSettled: () => {
+          setIsSubmitting(false);
+        },
+      });
     }
   };
 
@@ -115,10 +151,12 @@ export function TutorProfileForm() {
     );
   }
 
-  const isPending = updateProfile.isPending || createProfile.isPending;
+  const isPending =
+    updateProfile.isPending || createProfile.isPending || isSubmitting;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Bio Section */}
       <Card>
         <CardHeader>
           <CardTitle>About You</CardTitle>
@@ -218,7 +256,7 @@ export function TutorProfileForm() {
       </Card>
 
       <FormActions
-        onCancel={() => window.history.back()}
+        onCancel={() => router.push("/tutor")}
         isPending={isPending}
         submitText={isEditing ? "Update Profile" : "Create Profile"}
       />
