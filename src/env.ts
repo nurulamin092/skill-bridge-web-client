@@ -3,13 +3,14 @@ import * as z from "zod";
 
 export const env = createEnv({
   server: {
-    BACKEND_URL: z.url(),
-    FRONTEND_URL: z.url(),
+    BACKEND_URL: z.url().optional(),
+    FRONTEND_URL: z.url().optional(),
   },
 
   client: {
-    NEXT_PUBLIC_API_URL: z.url(),
-    NEXT_PUBLIC_AUTH_URL: z.url(),
+    NEXT_PUBLIC_API_URL: z.url().optional(),
+    NEXT_PUBLIC_AUTH_URL: z.url().optional(),
+    NEXT_PUBLIC_APP_URL: z.url().optional(),
     NEXT_PUBLIC_TEST: z.string(),
   },
 
@@ -18,6 +19,7 @@ export const env = createEnv({
     FRONTEND_URL: process.env.FRONTEND_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_TEST: process.env.NEXT_PUBLIC_TEST,
   },
 });
