@@ -27,7 +27,7 @@ export function useUpdateSessionStatus() {
       status: "COMPLETED" | "NO_SHOW";
     }) => {
       const response = await apiFetch<{ success: boolean; data: Session }>(
-        `/tutor/bookings/${bookingId}/status`,
+        `/tutors/bookings/${bookingId}/status`,
         {
           method: "PATCH",
           body: JSON.stringify({ status }),

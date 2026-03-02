@@ -32,6 +32,7 @@ export interface Tutor {
     };
   };
 }
+
 export interface TutorCardData {
   id: string;
   name: string;
@@ -42,6 +43,7 @@ export interface TutorCardData {
   bio?: string | null;
   categories: string[];
 }
+
 export interface SingleTutor {
   id: string;
   bio?: string | null;
@@ -104,13 +106,16 @@ export interface TutorProfileData {
     category: CategoryTypes;
   }[];
 }
-
 export interface Session {
   id: string;
   status: "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
   priceSnapshot: number;
-  startTime: string;
-  endTime: string;
+
+  availability: {
+    startTime: string;
+    endTime: string;
+  };
+
   student: {
     id: string;
     name: string;
