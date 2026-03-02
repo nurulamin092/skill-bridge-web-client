@@ -256,9 +256,31 @@ export function BookingList({ filter = "all" }: BookingListProps) {
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/tutors/${booking.tutor.id}`}>View Tutor</Link>
                 </Button>
-                {/* ✅ Review button - only for completed bookings without review */}
-                {booking.status === "COMPLETED" && !booking.review && (
+
+                {/* {booking.status === "COMPLETED" && !booking.review && (
                   <Button size="sm" asChild variant="secondary">
+                    <Link href={`/student/reviews/new?booking=${booking.id}`}>
+                      <Star className="h-4 w-4 mr-1" />
+                      Leave Review
+                    </Link>
+                  </Button>
+                )} */}
+                {booking.status === "COMPLETED" && !booking.review && (
+                  <Button
+                    size="sm"
+                    asChild
+                    variant="secondary"
+                    onClick={() => {
+                      console.log(
+                        "🔘 Review button clicked for booking:",
+                        booking.id,
+                      );
+                      console.log(
+                        "📤 Redirecting to:",
+                        `/student/reviews/new?booking=${booking.id}`,
+                      );
+                    }}
+                  >
                     <Link href={`/student/reviews/new?booking=${booking.id}`}>
                       <Star className="h-4 w-4 mr-1" />
                       Leave Review
