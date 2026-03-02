@@ -21,3 +21,4 @@ export default async function TutorProfilePage() {
     </div>
   );
 }
+export const dynamic = "force-dynamic";

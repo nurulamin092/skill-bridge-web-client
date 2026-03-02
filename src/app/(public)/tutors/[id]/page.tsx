@@ -14,3 +14,4 @@ export default async function TutorDetailsPage({ params }: PageProps) {
     </div>
   );
 }
+export const dynamic = "force-dynamic";

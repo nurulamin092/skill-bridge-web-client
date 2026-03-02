@@ -16,3 +16,4 @@ export default async function TutorDashboardPage() {
 
   return <TutorDashboard />;
 }
+export const dynamic = "force-dynamic";

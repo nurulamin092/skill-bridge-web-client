@@ -26,3 +26,4 @@ export default async function StudentDashboardPage() {
     />
   );
 }
+export const dynamic = "force-dynamic";

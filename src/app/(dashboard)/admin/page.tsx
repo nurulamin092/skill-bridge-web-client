@@ -11,3 +11,5 @@ export default async function AdminDashboardPage() {
 
   return <AdminDashboard />;
 }
+
+export const dynamic = "force-dynamic";

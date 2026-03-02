@@ -55,3 +55,4 @@ export default function TutorsPage() {
     </div>
   );
 }
+export const dynamic = "force-dynamic";
