@@ -9,13 +9,14 @@ export async function getSessionFromCookie(
     const cookie = request.headers.get("cookie");
 
     if (!cookie) {
-      console.log("4. No cookie found");
+      console.log("❌ No cookie found");
       return null;
     }
 
-    const apiUrl = env.NEXT_PUBLIC_API_URL;
+    const authUrl = env.NEXT_PUBLIC_API_URL;
+    const sessionUrl = `${authUrl}/auth/session`;
 
-    const sessionUrl = `${apiUrl}/auth/me`;
+    console.log("🔍 Fetching session from:", sessionUrl);
 
     const response = await fetch(sessionUrl, {
       method: "GET",
@@ -27,35 +28,61 @@ export async function getSessionFromCookie(
       cache: "no-store",
     });
 
+    console.log("📡 Response status:", response.status);
+    console.log("📡 Response OK:", response.ok);
+
     const responseText = await response.text();
+    console.log("📄 Raw response:", responseText);
+
+    if (!responseText || responseText.trim() === "") {
+      console.log("⚠️ Empty response body");
+      return null;
+    }
 
     let result;
     try {
       result = JSON.parse(responseText);
+      console.log("✅ Parsed result:", result);
     } catch (e) {
-      console.log("9. Failed to parse JSON:", e);
+      console.log("❌ Failed to parse JSON:", e);
       return null;
     }
 
-    if (result?.data) {
-      const userData = result.data;
-      const role = userData.role?.toUpperCase() || "STUDENT";
-
+    // Better Auth response format - check different possible structures
+    if (result?.user) {
+      const user = result.user;
+      const role = user.role?.toUpperCase() || "STUDENT";
       return {
         user: {
-          id: userData.id,
-          email: userData.email,
-          name: userData.name || "",
-          phone: userData.phone || "",
-          image: userData.image || "",
+          id: user.id,
+          email: user.email,
+          name: user.name || "",
+          phone: user.phone || "",
+          image: user.image || "",
           role,
         },
       };
     }
 
+    if (result?.data?.user) {
+      const user = result.data.user;
+      const role = user.role?.toUpperCase() || "STUDENT";
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name || "",
+          phone: user.phone || "",
+          image: user.image || "",
+          role,
+        },
+      };
+    }
+
+    console.log("❌ No user data in response");
     return null;
   } catch (error) {
-    console.error("Error in getSessionFromCookie:", error);
+    console.error("❌ Error in getSessionFromCookie:", error);
     return null;
   }
 }
