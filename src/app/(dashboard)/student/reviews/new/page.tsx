@@ -138,3 +138,4 @@ export default async function NewReviewPage({ searchParams }: PageProps) {
     </div>
   );
 }
+export const dynamic = "force-dynamic";
