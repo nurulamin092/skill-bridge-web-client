@@ -53,3 +53,4 @@ export default async function BookingDetailsPage({ params }: PageProps) {
     </div>
   );
 }
+export const dynamic = "force-dynamic";

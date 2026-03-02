@@ -21,3 +21,5 @@ export default async function StudentUpcomingPage() {
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";

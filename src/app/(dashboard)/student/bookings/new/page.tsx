@@ -52,3 +52,4 @@ export default async function NewBookingPage({ searchParams }: PageProps) {
     </div>
   );
 }
+export const dynamic = "force-dynamic";

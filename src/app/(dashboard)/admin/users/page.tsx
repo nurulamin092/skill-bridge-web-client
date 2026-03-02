@@ -19,3 +19,4 @@ export default async function AdminUsersPage() {
     </div>
   );
 }
+export const dynamic = "force-dynamic";

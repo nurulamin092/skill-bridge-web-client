@@ -22,3 +22,4 @@ export default async function MyReviewsPage() {
     </div>
   );
 }
+export const dynamic = "force-dynamic";

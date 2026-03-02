@@ -9,3 +9,5 @@ export default async function AdminCategoriesPage() {
   }
   return <CategoryManagement />;
 }
+
+export const dynamic = "force-dynamic";

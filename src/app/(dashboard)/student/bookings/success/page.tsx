@@ -39,3 +39,5 @@ export default async function BookingSuccessPage() {
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";
