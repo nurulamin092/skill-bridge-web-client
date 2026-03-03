@@ -257,14 +257,6 @@ export function BookingList({ filter = "all" }: BookingListProps) {
                   <Link href={`/tutors/${booking.tutor.id}`}>View Tutor</Link>
                 </Button>
 
-                {/* {booking.status === "COMPLETED" && !booking.review && (
-                  <Button size="sm" asChild variant="secondary">
-                    <Link href={`/student/reviews/new?booking=${booking.id}`}>
-                      <Star className="h-4 w-4 mr-1" />
-                      Leave Review
-                    </Link>
-                  </Button>
-                )} */}
                 {booking.status === "COMPLETED" && !booking.review && (
                   <Button
                     size="sm"
@@ -289,7 +281,7 @@ export function BookingList({ filter = "all" }: BookingListProps) {
                 )}
               </div>
 
-              {booking.status === "CONFIRMED" && isUpcoming && (
+              {/* {booking.status === "CONFIRMED" && isUpcoming && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
@@ -318,6 +310,61 @@ export function BookingList({ filter = "all" }: BookingListProps) {
                             less than 24 hours away. Please contact support if
                             you need assistance.
                           </>
+                        )}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Go Back</AlertDialogCancel>
+                      {canUserCancel && (
+                        <AlertDialogAction
+                          onClick={() => handleCancel(booking.id)}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          Yes, Cancel Booking
+                        </AlertDialogAction>
+                      )}
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )} */}
+              {booking.status === "CONFIRMED" && isUpcoming && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={!canUserCancel}
+                    >
+                      {isThisCancelling ? "Cancelling..." : "Cancel Booking"}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Cancel this session?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {canUserCancel ? (
+                          <>
+                            Are you sure you want to cancel your session with{" "}
+                            <span className="font-medium">
+                              {booking.tutor.user.name}
+                            </span>
+                            ? This action cannot be undone.
+                          </>
+                        ) : (
+                          // ✅ User-friendly message
+                          <div className="space-y-2">
+                            <p className="text-destructive font-medium">
+                              Cannot cancel this session
+                            </p>
+                            <p>
+                              You can only cancel sessions up to 24 hours before
+                              the start time. This session starts in less than
+                              24 hours.
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              If you have an emergency, please contact support.
+                            </p>
+                          </div>
                         )}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
