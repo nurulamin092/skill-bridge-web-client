@@ -6,10 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, DollarSign, User, Star } from "lucide-react";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
 import { Booking } from "../types/booking.types";
+import { LoadingSkeleton } from "@/components/common/feedback/LoadingSkeleton";
+import { ErrorState } from "@/components/common/feedback/ErrorState";
 
 interface BookingDetailsProps {
-  booking: Booking;
+  bookingId: string;
 }
 
 const statusConfig = {
@@ -32,7 +36,34 @@ const statusConfig = {
   },
 };
 
-export function BookingDetails({ booking }: BookingDetailsProps) {
+export function BookingDetails({ bookingId }: BookingDetailsProps) {
+  const {
+    data: booking,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["booking", bookingId],
+    queryFn: async (): Promise<Booking> => {
+      const response = await apiFetch<{ success: boolean; data: Booking }>(
+        `/booking/${bookingId}`,
+      );
+      return response.data;
+    },
+  });
+
+  if (isLoading) {
+    return <LoadingSkeleton type="card" rows={3} />;
+  }
+
+  if (error || !booking) {
+    return (
+      <ErrorState
+        message="Failed to load booking details"
+        onRetry={() => window.location.reload()}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -110,7 +141,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
               {booking.review.comment && (
                 <p className="text-sm text-muted-foreground">
-                  &quot{booking.review.comment}&quot
+                  &quot;{booking.review.comment}&quot;
                 </p>
               )}
             </div>
