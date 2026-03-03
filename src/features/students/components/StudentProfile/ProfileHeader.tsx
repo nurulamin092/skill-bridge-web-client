@@ -2,8 +2,10 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Phone, Calendar } from "lucide-react";
+import { Phone, Calendar, Edit } from "lucide-react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { StudentProfile } from "../../types/student.types";
 
 interface ProfileHeaderProps {
@@ -46,6 +48,13 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               </div>
             </div>
           </div>
+
+          <Button asChild variant="outline" size="sm">
+            <Link href="/student/profile/edit">
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Profile
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
