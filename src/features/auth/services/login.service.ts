@@ -19,7 +19,21 @@ export async function login(data: LoginPayload): Promise<LoginResponse> {
   });
 
   if (error) {
-    throw new Error(error.message);
+    if (
+      error.message?.includes("Invalid email") ||
+      error.message?.includes("user not found")
+    ) {
+      throw new Error("No account found with this email address");
+    }
+
+    if (error.message?.includes("Invalid password")) {
+      throw new Error("Incorrect password. Please try again");
+    }
+
+    if (error.message?.includes("too many requests")) {
+      throw new Error("Too many login attempts. Please try again later");
+    }
+    throw new Error(error.message || "Login failed");
   }
 
   if (!result || !result.user) {

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 
 import { QueryProvider } from "@/providers/QueryProvider";
 import { AuthProvider } from "@/features/auth/context";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +46,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              {children} <Toaster richColors position="top-right" />
+            </QueryProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

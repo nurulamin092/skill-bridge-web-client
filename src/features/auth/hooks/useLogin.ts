@@ -23,11 +23,11 @@ export function useLogin() {
         redirectUrl = "/student";
       }
 
+      toast.success("Login successful!");
+
       setTimeout(() => {
         router.push(redirectUrl);
       }, 100);
-
-      toast.success("Login successful");
     },
     onError: (error: unknown) => {
       const errorMessage =
