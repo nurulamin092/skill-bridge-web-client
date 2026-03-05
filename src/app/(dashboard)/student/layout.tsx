@@ -15,8 +15,19 @@ export default function StudentLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && (!isAuthenticated || user?.role !== "STUDENT")) {
-      router.push("/login?callbackUrl=/student");
+    //  if (loading) return;
+    // if (!loading && (!isAuthenticated || user?.role !== "STUDENT")) {
+    //   router.push("/login?callbackUrl=/student");
+    // }
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      router.replace("/login?callbackUrl=/student");
+      return;
+    }
+
+    if (user?.role !== "STUDENT") {
+      router.replace("/");
     }
   }, [isAuthenticated, user, loading, router]);
 

@@ -1,56 +1,52 @@
-import {
-  BetterAuthUser,
-  hasRole,
-  isAuthUser,
-  LoginResponse,
-  Role,
-} from "../types/auth.types";
 import { authClient } from "@/lib/auth-client";
+import { LoginResponse, Role } from "../types/auth.types";
 
-interface LoginPayload {
+export async function login(data: {
   email: string;
   password: string;
-}
+}): Promise<LoginResponse> {
+  try {
+    console.log("📝 Login attempt for:", data.email);
 
-export async function login(data: LoginPayload): Promise<LoginResponse> {
-  const { data: result, error } = await authClient.signIn.email({
-    email: data.email,
-    password: data.password,
-  });
+    const { data: result, error } = await authClient.signIn.email({
+      email: data.email,
+      password: data.password,
+    });
 
-  if (error) {
-    if (
-      error.message?.includes("Invalid email") ||
-      error.message?.includes("user not found")
-    ) {
-      throw new Error("No account found with this email address");
+    if (error) {
+      console.error("❌ Login error:", error);
+      throw new Error(error.message);
     }
 
-    if (error.message?.includes("Invalid password")) {
-      throw new Error("Incorrect password. Please try again");
+    if (!result?.user) {
+      throw new Error("No user data received");
     }
 
-    if (error.message?.includes("too many requests")) {
-      throw new Error("Too many login attempts. Please try again later");
+    const { data: session } = await authClient.getSession();
+    console.log("📦 Session after login:", session);
+
+    let role: Role = "STUDENT";
+
+    if (session?.user && "role" in session.user) {
+      const possibleRole = (session.user as { role?: unknown }).role;
+      if (
+        possibleRole === "STUDENT" ||
+        possibleRole === "TUTOR" ||
+        possibleRole === "ADMIN"
+      ) {
+        role = possibleRole;
+      }
     }
-    throw new Error(error.message || "Login failed");
-  }
 
-  if (!result || !result.user) {
-    throw new Error("Login failed:No user data received");
+    return {
+      user: {
+        id: result.user.id,
+        email: result.user.email,
+        role: role,
+      },
+    };
+  } catch (error) {
+    console.error("❌ Login service error:", error);
+    throw error;
   }
-  if (!isAuthUser(result.user)) {
-    throw new Error("Login failed: Invalid user data structure");
-  }
-
-  const user = result.user as BetterAuthUser;
-  const role: Role = hasRole(user) ? user.role : "STUDENT";
-
-  return {
-    user: {
-      id: user.id,
-      email: user.email,
-      role: role,
-    },
-  };
 }

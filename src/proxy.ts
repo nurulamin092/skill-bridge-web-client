@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromCookie } from "./lib/auth";
-import { env } from "./env";
 
 export const config = {
   matcher: [
@@ -11,95 +10,71 @@ export const config = {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  console.log("🔍 Proxy running for:", pathname);
+
   if (pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico")) {
     return NextResponse.next();
   }
+
   const session = await getSessionFromCookie(request);
+  console.log(
+    "👤 Session in proxy:",
+    session?.user?.email,
+    session?.user?.role,
+  );
 
   const publicRoutes = [
     "/",
     "/login",
     "/register",
     "/tutors",
-    "/tutors/",
     "/unauthorized",
     "/verify-email",
-    "/tutor/profile",
   ];
-
   const isPublicRoute = publicRoutes.some(
     (route) => pathname === route || pathname.startsWith("/tutors/"),
   );
 
   if (isPublicRoute) {
-    if (pathname === "/login" || pathname === "/register") {
-      if (session) {
-        const role = session.user.role;
-        if (role === "ADMIN")
-          return NextResponse.redirect(new URL("/admin", request.url));
-        if (role === "TUTOR")
-          return NextResponse.redirect(new URL("/tutor", request.url));
-        if (role === "STUDENT")
-          return NextResponse.redirect(new URL("/student", request.url));
-      }
+    if ((pathname === "/login" || pathname === "/register") && session) {
+      const role = session.user.role;
+      console.log("🔄 Already logged in, redirecting to:", role);
+
+      if (role === "ADMIN")
+        return NextResponse.redirect(new URL("/admin", request.url));
+      if (role === "TUTOR")
+        return NextResponse.redirect(new URL("/tutor", request.url));
+      if (role === "STUDENT")
+        return NextResponse.redirect(new URL("/student", request.url));
     }
     return NextResponse.next();
   }
 
   if (!session) {
-    console.log("4. No session, redirecting to login");
+    console.log("🚫 No session, redirecting to login");
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  if (session.user.role === "TUTOR") {
-    if (!pathname.startsWith("/tutor/profile")) {
-      try {
-        const response = await fetch(
-          `${env.NEXT_PUBLIC_API_URL}/tutor/profile/me`,
-          {
-            headers: {
-              Cookie: request.headers.get("cookie") || "",
-            },
-          },
-        );
+  const role = session.user.role;
 
-        if (response.status === 403) {
-          const errorData = await response.json().catch(() => ({}));
-          if (errorData.message?.includes("complete your tutor profile")) {
-            return NextResponse.redirect(
-              new URL("/tutor/profile", request.url),
-            );
-          }
-        }
-
-        if (response.status === 404) {
-          return NextResponse.redirect(new URL("/tutor/profile", request.url));
-        }
-
-        if (response.status === 401) {
-          const loginUrl = new URL("/login", request.url);
-          loginUrl.searchParams.set("callbackUrl", pathname);
-          return NextResponse.redirect(loginUrl);
-        }
-      } catch (error) {
-        console.error("Profile check error:", error);
-        return NextResponse.redirect(new URL("/tutor/profile", request.url));
-      }
-    }
-  }
-
-  if (pathname.startsWith("/tutor") && session.user.role !== "TUTOR") {
+  if (pathname.startsWith("/student") && role !== "STUDENT") {
+    console.log("🚫 Not a student, redirecting to unauthorized");
     return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 
-  if (pathname.startsWith("/student") && session.user.role !== "STUDENT") {
+  if (pathname.startsWith("/tutor") && role !== "TUTOR") {
+    console.log("🚫 Not a tutor, redirecting to unauthorized");
     return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 
-  if (pathname.startsWith("/admin") && session.user.role !== "ADMIN") {
+  if (pathname.startsWith("/admin") && role !== "ADMIN") {
+    console.log("🚫 Not an admin, redirecting to unauthorized");
     return NextResponse.redirect(new URL("/unauthorized", request.url));
+  }
+
+  if (role === "TUTOR" && !pathname.startsWith("/tutor/profile")) {
   }
 
   return NextResponse.next();

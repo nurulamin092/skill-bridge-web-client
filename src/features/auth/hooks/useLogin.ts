@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "../context";
 import { useMutation } from "@tanstack/react-query";
@@ -11,28 +13,32 @@ export function useLogin() {
   return useMutation({
     mutationFn: login,
     onSuccess: async (data) => {
-      await refresh();
-      const role = data?.user?.role;
+      try {
+        console.log("✅ Login successful, role:", data.user.role);
 
-      let redirectUrl = "/";
-      if (role === "ADMIN") {
-        redirectUrl = "/admin";
-      } else if (role === "TUTOR") {
-        redirectUrl = "/tutor";
-      } else {
-        redirectUrl = "/student";
+        await refresh();
+
+        toast.success("লগইন সফল হয়েছে!");
+
+        let redirectUrl = "/";
+        if (data.user.role === "ADMIN") redirectUrl = "/admin";
+        else if (data.user.role === "TUTOR") redirectUrl = "/tutor";
+        else if (data.user.role === "STUDENT") redirectUrl = "/student";
+
+        console.log("🚀 Redirecting to:", redirectUrl);
+
+        router.replace(redirectUrl);
+        router.refresh();
+      } catch (error) {
+        console.error("❌ Redirect error:", error);
+        toast.error("রিডাইরেক্ট করতে সমস্যা হয়েছে");
       }
-
-      toast.success("Login successful!");
-
-      setTimeout(() => {
-        router.push(redirectUrl);
-      }, 100);
     },
     onError: (error: unknown) => {
-      const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      toast.error(errorMessage);
+      console.error("❌ Login error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "লগইন ব্যর্থ হয়েছে",
+      );
     },
   });
 }

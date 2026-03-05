@@ -12,9 +12,8 @@ export async function getSessionFromCookie(
       console.log("❌ No cookie found");
       return null;
     }
-    // const authUrl = env.NEXT_PUBLIC_API_URL;
-    // const sessionUrl = `${authUrl}/auth/session`;
-    const sessionUrl = `${env.NEXT_PUBLIC_AUTH_URL}/session`;
+
+    const sessionUrl = `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
 
     console.log("🔍 Fetching session from:", sessionUrl);
 
@@ -22,6 +21,7 @@ export async function getSessionFromCookie(
       method: "GET",
       headers: {
         Cookie: cookie,
+        "Content-Type": "application/json",
       },
       cache: "no-store",
     });
@@ -32,22 +32,23 @@ export async function getSessionFromCookie(
     }
 
     const result = await response.json();
+    console.log("📦 Session result:", result);
 
-    if (!result?.user) {
+    const userData = result?.user || result?.session?.user;
+
+    if (!userData) {
       console.log("❌ No user in session response");
       return null;
     }
 
-    const user = result.user;
-
     return {
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name || "",
-        phone: user.phone || "",
-        image: user.image || "",
-        role: user.role?.toUpperCase() || "STUDENT",
+        id: userData.id,
+        email: userData.email,
+        name: userData.name || "",
+        phone: userData.phone || "",
+        image: userData.image || "",
+        role: userData.role?.toUpperCase() || "STUDENT",
       },
     };
   } catch (error) {

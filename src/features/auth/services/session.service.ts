@@ -1,19 +1,32 @@
-import { AuthSession, hasRole, isAuthUser } from "../types/auth.types";
+import { AuthSession } from "../types/auth.types";
 import { authClient } from "@/lib/auth-client";
 
 export async function getSession(): Promise<AuthSession | null> {
   try {
+    console.log("🔍 Fetching session...");
+
     const { data: session, error } = await authClient.getSession();
 
-    if (error || !session?.user) {
+    if (error) {
+      console.error("❌ Session error:", error);
       return null;
     }
 
-    if (!isAuthUser(session.user)) {
+    if (!session?.user) {
+      console.log("ℹ️ No user in session");
       return null;
     }
 
-    const user = session.user;
+    console.log("✅ Session user:", session.user);
+
+    const user = session.user as unknown as {
+      id: string;
+      email: string;
+      name: string;
+      role: "STUDENT" | "TUTOR" | "ADMIN";
+      phone?: string | null;
+      image?: string | null;
+    };
 
     return {
       user: {
@@ -21,24 +34,35 @@ export async function getSession(): Promise<AuthSession | null> {
         email: user.email,
         name: user.name,
         phone: user.phone || "",
-        image: session.user.image || "",
-        role: hasRole(user) ? user.role : "STUDENT",
+        image: user.image || "",
+        role: user.role || "STUDENT",
       },
     };
   } catch (error) {
-    console.error("Session error:", error);
+    console.error("❌ Session error:", error);
     return null;
   }
 }
 
 export async function logout() {
   try {
+    console.log("🚪 Logging out...");
     const { error } = await authClient.signOut();
     if (error) {
       throw new Error(error.message);
     }
+    console.log("✅ Logout successful");
+
+    // Clear cookies
+    if (typeof window !== "undefined") {
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+    }
   } catch (error) {
-    console.error("Logout service error:", error);
+    console.error("❌ Logout service error:", error);
     throw error;
   }
 }

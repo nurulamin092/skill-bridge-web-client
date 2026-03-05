@@ -6,7 +6,9 @@ export async function getServerSession(): Promise<AuthSession | null> {
   try {
     const cookie = (await headers()).get("cookie") || "";
 
-    const url = `${env.NEXT_PUBLIC_API_URL}/auth/me`;
+    const url = `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
+
+    console.log("🔍 Server fetching session from:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -17,13 +19,20 @@ export async function getServerSession(): Promise<AuthSession | null> {
       cache: "no-store",
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.log("❌ Server session response not OK:", response.status);
+      return null;
+    }
 
     const result = await response.json();
-    if (!result?.success || !result?.data) return null;
+    console.log("📦 Server session result:", result);
 
-    const userData = result.data;
-    const role = userData.role?.toUpperCase() || "STUDENT";
+    const userData = result?.user || result?.session?.user;
+
+    if (!userData) {
+      console.log("❌ No user data in server session");
+      return null;
+    }
 
     return {
       user: {
@@ -32,11 +41,11 @@ export async function getServerSession(): Promise<AuthSession | null> {
         name: userData.name || "",
         phone: userData.phone || "",
         image: userData.image || "",
-        role,
+        role: userData.role?.toUpperCase() || "STUDENT",
       },
     };
   } catch (error) {
-    console.error("ServerSession Error:", error);
+    console.error("❌ ServerSession Error:", error);
     return null;
   }
 }
