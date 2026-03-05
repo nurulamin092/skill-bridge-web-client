@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromCookie } from "./lib/auth";
+import { getCookieName } from "./lib/auth-client";
 
 export const config = {
   matcher: [
@@ -11,6 +12,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   console.log("🔍 Proxy running for:", pathname);
+  console.log("🍪 Looking for cookie:", getCookieName());
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico")) {
     return NextResponse.next();

@@ -1,10 +1,10 @@
 import { AuthSession } from "../types/auth.types";
-import { authClient } from "@/lib/auth-client";
+import { authClient, getCookieName } from "@/lib/auth-client";
 
 export async function getSession(): Promise<AuthSession | null> {
   try {
     console.log("🔍 Fetching session...");
-
+    console.log("🍪 Cookie name:", getCookieName());
     const { data: session, error } = await authClient.getSession();
 
     if (error) {

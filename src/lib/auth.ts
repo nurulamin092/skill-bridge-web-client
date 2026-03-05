@@ -1,12 +1,15 @@
 import { env } from "@/env";
 import { AuthSession } from "@/features/auth/types/auth.types";
 import { NextRequest } from "next/server";
+import { getCookieName } from "./auth-client";
 
 export async function getSessionFromCookie(
   request: NextRequest,
 ): Promise<AuthSession | null> {
   try {
     const cookie = request.headers.get("cookie");
+    console.log("🍪 All cookies:", cookie);
+    console.log("🔍 Looking for:", getCookieName());
 
     if (!cookie) {
       console.log("❌ No cookie found");
