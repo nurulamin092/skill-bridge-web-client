@@ -53,7 +53,6 @@ export async function logout() {
     }
     console.log("✅ Logout successful");
 
-    // Clear cookies
     if (typeof window !== "undefined") {
       document.cookie.split(";").forEach((c) => {
         document.cookie = c

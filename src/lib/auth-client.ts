@@ -1,5 +1,4 @@
 import { env } from "@/env";
-
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
@@ -11,6 +10,7 @@ export const authClient = createAuthClient({
     credentials: "include",
   },
 });
+
 export const getCookieName = () => {
   return process.env.NODE_ENV === "production"
     ? "__Secure-better-auth.session_token"
