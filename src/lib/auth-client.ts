@@ -11,10 +11,13 @@ export const authClient = createAuthClient({
   },
 });
 
+// export const getCookieName = () => {
+//   return process.env.NODE_ENV === "production"
+//     ? "better-auth.session_token"
+//     : "better-auth.session_token";
+// };
 export const getCookieName = () => {
-  return process.env.NODE_ENV === "production"
-    ? "__Secure-better-auth.session_token"
-    : "better-auth.session_token";
+  return "better-auth.session_token";
 };
 
 export const {
