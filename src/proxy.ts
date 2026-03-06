@@ -13,7 +13,14 @@ export async function proxy(request: NextRequest) {
 
   console.log("🔍 Proxy running for:", pathname);
   console.log("🍪 Looking for cookie:", getCookieName());
+  const url = request.nextUrl.clone();
 
+  // API requests to backend
+  if (url.pathname.startsWith("/api/auth")) {
+    url.hostname = "skillbridge-api-tiua.onrender.com";
+    url.protocol = "https";
+    return NextResponse.rewrite(url);
+  }
   if (pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico")) {
     return NextResponse.next();
   }
