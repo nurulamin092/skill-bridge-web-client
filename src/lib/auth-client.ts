@@ -29,14 +29,39 @@
 //   verifyEmail,
 // } = authClient;
 
+// import { env } from "@/env";
+// import { createAuthClient } from "better-auth/react";
+
+// export const authClient = createAuthClient({
+//   baseURL:
+//     process.env.NODE_ENV === "production"
+//       ? "https://skillbridge-api-tiua.onrender.com/api/auth"
+//       : env.NEXT_PUBLIC_AUTH_URL || "http://localhost:5000/api/auth",
+//   fetchOptions: {
+//     credentials: "include", // ✅ include cookies
+//   },
+// });
+
+// export const getCookieName = () => "better-auth.session_token";
+
+// export const {
+//   useSession,
+//   signIn,
+//   signUp,
+//   signOut,
+//   resetPassword,
+//   verifyEmail,
+// } = authClient;
+
 import { createAuthClient } from "better-auth/react";
 
+const baseURL =
+  typeof window === "undefined"
+    ? process.env.NEXT_PUBLIC_APP_URL + "/api/auth"
+    : "/api/auth";
+
 export const authClient = createAuthClient({
-  // baseURL:
-  //   process.env.NODE_ENV === "production"
-  //     ? "https://skillbridge-api-tiua.onrender.com/api/auth"
-  //     : env.NEXT_PUBLIC_AUTH_URL || "http://localhost:5000/api/auth",
-  baseURL: "/api/auth",
+  baseURL,
   fetchOptions: {
     credentials: "include",
   },
