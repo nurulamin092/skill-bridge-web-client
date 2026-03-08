@@ -1,4 +1,4 @@
-import { Review } from "@/features/reviews/types/review.types";
+import { Review } from "@/features/shared/types/review.types";
 import { apiFetch } from "@/lib/api";
 
 export const getMyTutorReviews = async (): Promise<Review[]> => {

@@ -1,4 +1,5 @@
 import { CategoryTypes } from "@/features/categories/types/category.types";
+import { Review } from "@/features/shared/types/review.types";
 
 export interface Tutor {
   id: string;
@@ -21,16 +22,7 @@ export interface Tutor {
       slug: string;
     };
   }[];
-  reviews?: {
-    id: string;
-    rating: number;
-    comment: string;
-    student: {
-      id: string;
-      name: string;
-      image?: string;
-    };
-  };
+  reviews?: Review[]; // Using shared Review type
 }
 
 export interface TutorCardData {
@@ -73,18 +65,8 @@ export interface SingleTutor {
     endTime: string;
   }[];
 
-  reviews: {
-    id: string;
-    rating: number;
-    comment: string;
-    student: {
-      id: string;
-      name: string;
-      image?: string;
-    };
-  }[];
+  reviews: Review[];
 }
-
 export interface TutorQueryParams {
   category?: string;
   minPrice?: number;

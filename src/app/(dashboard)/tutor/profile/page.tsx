@@ -1,4 +1,4 @@
-import { TutorProfileForm } from "@/features/tutors/components/TutorProfileForm";
+import { TutorProfileForm } from "@/features/tutors/components/TutorProfileForm/index";
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 

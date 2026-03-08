@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { Star } from "lucide-react";
-import { Review } from "../types/review.types";
+import { Review } from "@/features/shared/types/review.types";
 
 interface ReviewCardProps {
   review: Review;

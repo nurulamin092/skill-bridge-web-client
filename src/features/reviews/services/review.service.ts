@@ -1,9 +1,6 @@
 import { apiFetch } from "@/lib/api";
-import {
-  CreateReviewPayload,
-  Review,
-  ReviewResponse,
-} from "../types/review.types";
+import { CreateReviewPayload, ReviewResponse } from "../types/review.types";
+import { Review } from "@/features/shared/types/review.types";
 
 export const createReview = async (
   data: CreateReviewPayload,

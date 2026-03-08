@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, Star } from "lucide-react";
 
-import { Review } from "@/features/reviews/types/review.types";
 import { EmptyState } from "@/components/common/feedback/EmptyState";
 import { ReviewCard } from "./ReviewCard";
+import { Review } from "@/features/shared/types/review.types";
 
 interface ReviewListProps {
   reviews: Review[];

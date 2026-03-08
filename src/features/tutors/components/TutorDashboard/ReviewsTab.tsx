@@ -2,8 +2,8 @@
 
 import { Star } from "lucide-react";
 import ReviewCard from "@/features/reviews/components/ReviewCard";
-import { Review } from "@/features/reviews/types/review.types";
 import { EmptyState } from "@/components/common/feedback/EmptyState";
+import { Review } from "@/features/shared/types/review.types";
 
 interface ReviewsTabProps {
   reviews?: Review[];

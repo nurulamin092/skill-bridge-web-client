@@ -1,11 +1,11 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Review } from "@/features/shared/types/review.types";
 import { Star, TrendingUp, Users } from "lucide-react";
-import { TutorReview } from "../../types/tutor.types";
 
 interface ReviewStatsProps {
-  reviews: TutorReview[];
+  reviews: Review[];
 }
 
 export function ReviewStats({ reviews }: ReviewStatsProps) {

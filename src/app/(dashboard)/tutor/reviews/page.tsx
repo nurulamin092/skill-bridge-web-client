@@ -1,4 +1,4 @@
-import { MyReviewsList } from "@/features/reviews/components/MyReviewsList";
+import { TutorReviews } from "@/features/tutors/components/TutorReviews";
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 
@@ -11,7 +11,8 @@ export default async function TutorReviewsPage() {
 
   return (
     <div className="container max-w-4xl py-8">
-      <MyReviewsList />
+      <TutorReviews />
     </div>
   );
 }
+export const dynamic = "force-dynamic";
