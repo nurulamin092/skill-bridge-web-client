@@ -43,12 +43,14 @@ export function TutorDashboard() {
     );
   }
 
-  const totalReviews = reviews?.length || 0;
-  const averageRating = reviews?.length
-    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(
-        1,
-      )
-    : "0.0";
+  const totalReviews = reviews?.length ?? 0;
+
+  const averageRating =
+    totalReviews > 0
+      ? (reviews!.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(
+          1,
+        )
+      : "0.0";
 
   const stats = [
     {

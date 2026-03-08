@@ -28,3 +28,9 @@ export const getMyReviews = async (): Promise<Review[]> => {
   );
   return response.data;
 };
+export const getMyTutorReviews = async (): Promise<Review[]> => {
+  const response = await apiFetch<{ success: boolean; data: Review[] }>(
+    "/tutors/me/reviews",
+  );
+  return response.data;
+};

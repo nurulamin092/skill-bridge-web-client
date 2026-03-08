@@ -6,11 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Star, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import ReviewCard from "./ReviewCard";
-import { useMyReview } from "../hooks/useReviews";
+import { useMyTutorReviews } from "../hooks/useReviews";
 
 export function MyReviewsList() {
-  const { data: reviews, isLoading, error } = useMyReview();
-
+  const { data: reviews, isLoading, error } = useMyTutorReviews();
   if (isLoading) {
     return (
       <div className="space-y-4">

@@ -18,7 +18,6 @@ import {
   useUpdateSessionStatus,
 } from "../hooks/useTutorSessions";
 
-// Date formatting helper functions
 const formatDate = (dateString?: string): string => {
   if (!dateString) {
     console.log("formatDate: No date string provided");
@@ -74,7 +73,6 @@ export function TutorSessions() {
   const { data: sessions, isLoading, error, refetch } = useTutorSessions();
   const updateStatus = useUpdateSessionStatus();
 
-  // Debug log for sessions data
   useEffect(() => {
     console.log("📊 Sessions data received:", sessions);
     if (sessions && sessions.length > 0) {
@@ -89,12 +87,10 @@ export function TutorSessions() {
   console.log("📅 Current time:", now.toISOString());
   console.log("🔍 Current filter:", filter);
 
-  // Filter sessions with proper error handling
   const filteredSessions = sessions?.filter((session: Session) => {
     console.log(`\n--- Processing session: ${session.id} ---`);
 
     try {
-      // Check if session and availability exist
       if (!session) {
         console.log("❌ Session is null/undefined");
         return false;

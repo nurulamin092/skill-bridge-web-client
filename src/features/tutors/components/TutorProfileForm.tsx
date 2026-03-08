@@ -9,23 +9,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
-// Common Components
 import { LoadingSkeleton } from "@/components/common/feedback/LoadingSkeleton";
 import { ErrorState } from "@/components/common/feedback/ErrorState";
 import { FormActions } from "@/components/common/forms/FormActions";
 import { InfoCard } from "@/components/common/cards/InfoCard";
 
-// Types & Schemas
 import { CategoryTypes } from "@/features/categories/types/category.types";
 import { ProfileFormData, profileSchema } from "../schemas";
 
-// Hooks
 import { useTutorProfile } from "../hooks/useTutorProfile";
 import { useCategories } from "../hooks/useCategories";
 import { useUpdateProfile } from "../hooks/useUpdateProfile";
 import { useCreateProfile } from "../hooks/useCreateProfile";
 
-// Category Checkbox Component
 function CategoryCheckbox({
   category,
   checked,
@@ -54,7 +50,6 @@ function CategoryCheckbox({
   );
 }
 
-// Main Component
 export function TutorProfileForm() {
   const router = useRouter();
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
@@ -78,7 +73,7 @@ export function TutorProfileForm() {
     register,
     handleSubmit,
     setValue,
-    reset, // ✅ Reset function যোগ করুন
+    reset,
     formState: { errors },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -103,7 +98,6 @@ export function TutorProfileForm() {
     if (isEditing) {
       updateProfile.mutate(data, {
         onSuccess: () => {
-          // ✅ Success - redirect to dashboard
           router.push("/tutor");
         },
         onSettled: () => {
@@ -113,7 +107,6 @@ export function TutorProfileForm() {
     } else {
       createProfile.mutate(data, {
         onSuccess: () => {
-          // ✅ Reset form first
           reset({
             bio: "",
             hourlyRate: 50,
@@ -122,7 +115,6 @@ export function TutorProfileForm() {
           });
           setSelectedCategoryIds([]);
 
-          // ✅ Then redirect to dashboard
           router.push("/tutor");
         },
         onSettled: () => {
@@ -156,7 +148,6 @@ export function TutorProfileForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Bio Section */}
       <Card>
         <CardHeader>
           <CardTitle>About You</CardTitle>
