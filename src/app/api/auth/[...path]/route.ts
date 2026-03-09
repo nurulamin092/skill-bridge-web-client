@@ -41,6 +41,7 @@
 //   const { path } = await context.params;
 //   return proxy(req, path);
 // }
+
 import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND = "https://skillbridge-api-tiua.onrender.com";
@@ -61,17 +62,28 @@ async function proxy(req: NextRequest, path: string[]) {
 
   const responseHeaders = new Headers();
 
+  // --- সমাধানের মূল অংশ ---
+  // আমরা শুধুমাত্র নিরাপদ হেডারগুলো কপি করব।
+  // content-encoding এবং content-length কপি করলে ব্রাউজার ERR_CONTENT_DECODING_FAILED দিবে।
   res.headers.forEach((value, key) => {
-    if (key !== "set-cookie") {
+    if (
+      key !== "content-encoding" && // ব্লক করতে হবে
+      key !== "content-length" && // ব্লক করতে হবে
+      key !== "transfer-encoding" &&
+      key !== "connection" &&
+      key !== "keep-alive" &&
+      key !== "set-cookie" // কুকি আলাদাভাবে প্রসেস হবে
+    ) {
       responseHeaders.append(key, value);
     }
   });
 
+  // --- কুকি প্রসেসিং (Domain রিমুভ) ---
   const cookies = res.headers.getSetCookie();
   if (cookies.length > 0) {
     cookies.forEach((cookie) => {
+      // ব্যাকএন্ডের ডোমেইন রিমুভ করে ব্রাউজারকে নিজের ডোমেইনে কুকি সেট করতে দিন
       const modifiedCookie = cookie.replace(/Domain=([^;]+);?/gi, "");
-
       responseHeaders.append("set-cookie", modifiedCookie);
     });
   }
