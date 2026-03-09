@@ -4,7 +4,7 @@ import { getCookieName } from "./lib/auth-client";
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
 
@@ -13,14 +13,7 @@ export async function proxy(request: NextRequest) {
 
   console.log("🔍 Proxy running for:", pathname);
   console.log("🍪 Looking for cookie:", getCookieName());
-  const url = request.nextUrl.clone();
 
-  // API requests to backend
-  if (url.pathname.startsWith("/api/auth")) {
-    url.hostname = "skillbridge-api-tiua.onrender.com";
-    url.protocol = "https";
-    return NextResponse.rewrite(url);
-  }
   if (pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico")) {
     return NextResponse.next();
   }
@@ -81,9 +74,6 @@ export async function proxy(request: NextRequest) {
   if (pathname.startsWith("/admin") && role !== "ADMIN") {
     console.log("🚫 Not an admin, redirecting to unauthorized");
     return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
-
-  if (role === "TUTOR" && !pathname.startsWith("/tutor/profile")) {
   }
 
   return NextResponse.next();
