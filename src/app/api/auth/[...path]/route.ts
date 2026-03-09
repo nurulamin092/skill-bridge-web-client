@@ -12,10 +12,12 @@ async function proxy(req: NextRequest, path: string[]) {
       "content-type": req.headers.get("content-type") || "application/json",
     },
     body: req.method !== "GET" ? await req.text() : undefined,
-    credentials: "include",
   });
 
   const headers = new Headers(res.headers);
+
+  headers.delete("content-encoding");
+  headers.delete("content-length");
 
   return new NextResponse(res.body, {
     status: res.status,
