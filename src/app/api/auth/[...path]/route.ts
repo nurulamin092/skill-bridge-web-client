@@ -10,6 +10,8 @@ async function proxy(req: NextRequest, path: string[]) {
     headers: {
       cookie: req.headers.get("cookie") || "",
       "content-type": req.headers.get("content-type") || "application/json",
+      origin: req.headers.get("origin") || "",
+      referer: req.headers.get("referer") || "",
     },
     body: req.method !== "GET" ? await req.text() : undefined,
   });
@@ -25,18 +27,16 @@ async function proxy(req: NextRequest, path: string[]) {
   });
 }
 
-export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ path: string[] }> },
-) {
-  const { path } = await context.params;
-  return proxy(req, path);
-}
-
 export async function POST(
   req: NextRequest,
-  context: { params: Promise<{ path: string[] }> },
+  { params }: { params: { path: string[] } },
 ) {
-  const { path } = await context.params;
-  return proxy(req, path);
+  return proxy(req, params.path);
+}
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { path: string[] } },
+) {
+  return proxy(req, params.path);
 }
