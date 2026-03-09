@@ -17,7 +17,6 @@ async function proxy(req: NextRequest, path: string[]) {
   });
 
   const headers = new Headers(res.headers);
-
   headers.delete("content-encoding");
   headers.delete("content-length");
 
@@ -27,16 +26,18 @@ async function proxy(req: NextRequest, path: string[]) {
   });
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { path: string[] } },
-) {
-  return proxy(req, params.path);
-}
-
 export async function GET(
   req: NextRequest,
-  { params }: { params: { path: string[] } },
+  context: { params: Promise<{ path: string[] }> },
 ) {
-  return proxy(req, params.path);
+  const { path } = await context.params;
+  return proxy(req, path);
+}
+
+export async function POST(
+  req: NextRequest,
+  context: { params: Promise<{ path: string[] }> },
+) {
+  const { path } = await context.params;
+  return proxy(req, path);
 }
