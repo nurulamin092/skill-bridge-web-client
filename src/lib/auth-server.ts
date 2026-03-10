@@ -27,8 +27,7 @@ export async function getServerSession(): Promise<AuthSession | null> {
     const result = await response.json();
     console.log("📦 Server session result:", result);
 
-    // const userData = result?.user || result?.session?.user;
-    const userData = result?.session?.user;
+    const userData = result?.user || result?.session?.user;
 
     if (!userData) {
       console.log("❌ No user data in server session");

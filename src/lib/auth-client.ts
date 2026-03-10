@@ -53,6 +53,26 @@
 //   verifyEmail,
 // } = authClient;
 
+// import { createAuthClient } from "better-auth/react";
+
+// export const authClient = createAuthClient({
+//   baseURL: process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3000/api/auth",
+
+//   fetchOptions: {
+//     credentials: "include",
+//   },
+// });
+
+// export const getCookieName = () => "better-auth.session_token";
+// export const {
+//   useSession,
+//   signIn,
+//   signUp,
+//   signOut,
+//   resetPassword,
+//   verifyEmail,
+// } = authClient;
+
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
@@ -64,6 +84,7 @@ export const authClient = createAuthClient({
 });
 
 export const getCookieName = () => "better-auth.session_token";
+
 export const {
   useSession,
   signIn,
