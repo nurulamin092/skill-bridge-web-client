@@ -37,8 +37,8 @@ export async function getSessionFromCookie(
     const result = await response.json();
     console.log("📦 Session result:", result);
 
-    const userData = result?.user || result?.session?.user;
-
+    // const userData = result?.user || result?.session?.user;
+    const userData = result?.session?.user;
     if (!userData) {
       console.log("❌ No user in session response");
       return null;

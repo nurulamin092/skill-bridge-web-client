@@ -64,7 +64,6 @@ export const authClient = createAuthClient({
 });
 
 export const getCookieName = () => "better-auth.session_token";
-
 export const {
   useSession,
   signIn,
