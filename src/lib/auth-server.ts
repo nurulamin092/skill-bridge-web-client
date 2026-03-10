@@ -41,7 +41,7 @@ export async function getServerSession(): Promise<AuthSession | null> {
         name: userData.name || "",
         phone: userData.phone || "",
         image: userData.image || "",
-        role: userData.role?.toUpperCase() || null,
+        role: userData.role?.toUpperCase() || "STUDENT",
       },
     };
   } catch (error) {
