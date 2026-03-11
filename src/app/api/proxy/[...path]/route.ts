@@ -142,7 +142,7 @@ import { NextRequest, NextResponse } from "next/server";
 const BACKEND = env.BACKEND_URL || "http://localhost:5000";
 
 async function proxy(req: NextRequest, path: string[]) {
-  const url = `${BACKEND}/api/v1/${path.join("/")}${req.nextUrl.search}`;
+  const url = `${BACKEND}/api/${path.join("/")}${req.nextUrl.search}`;
 
   const res = await fetch(url, {
     method: req.method,

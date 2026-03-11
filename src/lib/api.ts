@@ -11,8 +11,6 @@
 //     },
 //   });
 
-import { env } from "@/env";
-
 //   if (!res.ok) {
 //     const error = await res.json();
 //     throw new Error(error.message || "Request failed");
@@ -20,6 +18,8 @@ import { env } from "@/env";
 
 //   return res.json();
 // }
+
+import { env } from "@/env";
 export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {},
