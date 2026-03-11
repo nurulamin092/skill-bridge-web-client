@@ -135,7 +135,6 @@
 //   const { path } = await context.params;
 //   return proxy(req, path);
 // }
-
 import { env } from "@/env";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -144,11 +143,15 @@ const BACKEND = env.BACKEND_URL || "http://localhost:5000";
 async function proxy(req: NextRequest, path: string[]) {
   const url = `${BACKEND}/api/${path.join("/")}${req.nextUrl.search}`;
 
+  // detect origin: from request or fallback to app URL
+  const originHeader = req.headers.get("origin") || env.NEXT_PUBLIC_APP_URL;
+
   const res = await fetch(url, {
     method: req.method,
     headers: {
       cookie: req.headers.get("cookie") || "",
       "content-type": req.headers.get("content-type") || "application/json",
+      origin: originHeader,
     },
     body: req.method !== "GET" ? await req.text() : undefined,
   });
@@ -158,7 +161,6 @@ async function proxy(req: NextRequest, path: string[]) {
   });
 
   const setCookie = res.headers.get("set-cookie");
-
   if (setCookie) {
     response.headers.set("set-cookie", setCookie);
   }
