@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { LoginFormValues, loginSchema } from "../schemas";
 import Link from "next/link";
 import { useGoogleLogin } from "../hooks/useGoogleLogin";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -69,7 +70,7 @@ export function LoginForm({
                   {...register("email")}
                   disabled={isPending}
                 />
-                {errors.email && (
+                {errors.email?.message && (
                   <FieldDescription className="text-red-500">
                     {errors.email.message}
                   </FieldDescription>
@@ -93,7 +94,7 @@ export function LoginForm({
                   {...register("password")}
                   disabled={isPending}
                 />
-                {errors.password && (
+                {errors.password?.message && (
                   <FieldDescription className="text-red-500">
                     {errors.password.message}
                   </FieldDescription>
@@ -108,7 +109,16 @@ export function LoginForm({
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={() => googleMutate()}
+                  onClick={() =>
+                    googleMutate(undefined, {
+                      onError: (err) =>
+                        toast.error(
+                          err instanceof Error
+                            ? err.message
+                            : "Google login failed",
+                        ),
+                    })
+                  }
                   disabled={isGooglePending}
                   className="w-full"
                 >

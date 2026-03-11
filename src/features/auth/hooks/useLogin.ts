@@ -18,7 +18,7 @@ export function useLogin() {
 
         await refresh();
 
-        toast.success("লগইন সফল হয়েছে!");
+        toast.success("Login successful");
 
         let redirectUrl = "/";
         if (data.user.role === "ADMIN") redirectUrl = "/admin";
@@ -27,18 +27,16 @@ export function useLogin() {
 
         console.log("🚀 Redirecting to:", redirectUrl);
 
-        router.replace(redirectUrl);
+        router.push(redirectUrl);
         router.refresh();
       } catch (error) {
         console.error("❌ Redirect error:", error);
-        toast.error("রিডাইরেক্ট করতে সমস্যা হয়েছে");
+        toast.error("There was a problem redirecting.");
       }
     },
     onError: (error: unknown) => {
       console.error("❌ Login error:", error);
-      toast.error(
-        error instanceof Error ? error.message : "লগইন ব্যর্থ হয়েছে",
-      );
+      toast.error(error instanceof Error ? error.message : "Login failed");
     },
   });
 }
