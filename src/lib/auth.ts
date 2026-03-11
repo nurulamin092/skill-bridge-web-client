@@ -78,7 +78,11 @@ export async function getSessionFromCookie(
       return null;
     }
 
-    const sessionUrl = `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
+    // const sessionUrl = `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
+    const sessionUrl =
+      process.env.NODE_ENV === "production"
+        ? "/api/proxy/auth/get-session"
+        : `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
 
     console.log("🔍 Fetching session from:", sessionUrl);
 

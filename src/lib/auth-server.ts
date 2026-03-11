@@ -6,7 +6,11 @@ export async function getServerSession(): Promise<AuthSession | null> {
   try {
     const cookie = (await headers()).get("cookie") || "";
 
-    const url = `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
+    // const url = `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
+    const url =
+      process.env.NODE_ENV === "production"
+        ? "/api/proxy/auth/get-session"
+        : `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
 
     console.log("🔍 Server fetching session from:", url);
 

@@ -136,9 +136,10 @@
 //   return proxy(req, path);
 // }
 
+import { env } from "@/env";
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
+const BACKEND = env.BACKEND_URL || "http://localhost:5000";
 
 async function proxy(req: NextRequest, path: string[]) {
   const url = `${BACKEND}/api/v1/${path.join("/")}${req.nextUrl.search}`;
