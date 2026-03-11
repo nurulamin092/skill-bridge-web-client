@@ -154,6 +154,7 @@ async function proxy(req: NextRequest, path: string[]) {
       origin: originHeader,
     },
     body: req.method !== "GET" ? await req.text() : undefined,
+    credentials: "include",
   });
 
   const response = new NextResponse(res.body, {
