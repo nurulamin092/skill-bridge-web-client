@@ -10,7 +10,7 @@ export async function getServerSession(): Promise<AuthSession | null> {
       process.env.NODE_ENV === "production"
         ? `${env.NEXT_PUBLIC_APP_URL}/api/proxy/auth/get-session`
         : `${env.NEXT_PUBLIC_AUTH_URL}/get-session`;
-    console.log("🔍 Server fetching session from:", url);
+    console.log(" Server fetching session from:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -23,17 +23,17 @@ export async function getServerSession(): Promise<AuthSession | null> {
     });
 
     if (!response.ok) {
-      console.log("❌ Server session response not OK:", response.status);
+      console.log(" Server session response not OK:", response.status);
       return null;
     }
 
     const result = await response.json();
-    console.log("📦 Server session result:", result);
+    console.log(" Server session result:", result);
 
     const userData = result?.user || result?.session?.user;
 
     if (!userData) {
-      console.log("❌ No user data in server session");
+      console.log(" No user data in server session");
       return null;
     }
 
@@ -48,7 +48,7 @@ export async function getServerSession(): Promise<AuthSession | null> {
       },
     };
   } catch (error) {
-    console.error("❌ ServerSession Error:", error);
+    console.error(" ServerSession Error:", error);
     return null;
   }
 }
