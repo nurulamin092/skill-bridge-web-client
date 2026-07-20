@@ -8,7 +8,7 @@ export interface Tutor {
   experience: number;
   avgRating: number;
   isApproved: boolean;
-
+  reviewCount: number;
   user: {
     id: string;
     name: string;
