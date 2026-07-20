@@ -1,7 +1,9 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ComponentProps } from "react";
 import {
   Card,
   CardContent,
@@ -9,12 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "../hooks/useLogin";
 import { useForm } from "react-hook-form";
@@ -22,18 +18,19 @@ import { LoginFormValues, loginSchema } from "../schemas";
 import Link from "next/link";
 import { useGoogleLogin } from "../hooks/useGoogleLogin";
 import { toast } from "sonner";
+import { Loader2, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { DEMO_USERS } from "../utils/DEMO_USERS";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm({ className, ...props }: ComponentProps<"div">) {
   const { mutate: loginMutate, isPending: isLoginPending } = useLogin();
   const { mutate: googleMutate, isPending: isGooglePending } = useGoogleLogin();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
+    watch,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -42,6 +39,19 @@ export function LoginForm({
     },
   });
 
+  const email = watch("email");
+  const password = watch("password");
+  const isFormFilled = !!email && !!password;
+
+  const fillDemo = (email: string, password: string) => {
+    setValue("email", email);
+    setValue("password", password);
+    toast.success(" ডেমো অ্যাকাউন্ট লোড হয়েছে", {
+      description: `আপনি ${email} দিয়ে লগইন করতে প্রস্তুত`,
+      duration: 3000,
+    });
+  };
+
   const onSubmit = (data: LoginFormValues) => {
     loginMutate(data);
   };
@@ -49,94 +59,183 @@ export function LoginForm({
   const isPending = isLoginPending || isGooglePending;
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="m@example.com"
-                  {...register("email")}
-                  disabled={isPending}
-                />
-                {errors.email?.message && (
-                  <FieldDescription className="text-red-500">
-                    {errors.email.message}
-                  </FieldDescription>
+    <div
+      className={cn("flex flex-col gap-6 w-full max-w-md mx-auto", className)}
+      {...props}
+    >
+      <Card className="border-0 shadow-xl dark:shadow-2xl shadow-gray-200/50 dark:shadow-black/30 overflow-hidden">
+        {/* Header with gradient accent */}
+        <div className="relative">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500" />
+          <CardHeader className="pt-8 pb-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles className="size-5 text-blue-500" />
+              <CardTitle className="text-2xl font-bold bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
+                স্বাগতম
+              </CardTitle>
+            </div>
+            <CardDescription className="text-sm text-muted-foreground">
+              আপনার অ্যাকাউন্টে লগইন করুন
+            </CardDescription>
+          </CardHeader>
+        </div>
+
+        <CardContent className="space-y-6">
+          {/* ─── Login Form ─── */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-foreground flex items-center gap-2"
+              >
+                <Mail className="size-4 text-muted-foreground" />
+                ইমেইল
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="আপনার ইমেইল লিখুন"
+                disabled={isPending}
+                className={cn(
+                  "h-11 px-4 transition-all duration-200",
+                  errors.email && "border-red-500 ring-red-500/20",
                 )}
-              </Field>
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
 
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Link
-                    href="/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  autoComplete="current-password"
-                  {...register("password")}
-                  disabled={isPending}
-                />
-                {errors.password?.message && (
-                  <FieldDescription className="text-red-500">
-                    {errors.password.message}
-                  </FieldDescription>
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-foreground flex items-center gap-2"
+              >
+                <Lock className="size-4 text-muted-foreground" />
+                পাসওয়ার্ড
+              </label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="আপনার পাসওয়ার্ড লিখুন"
+                disabled={isPending}
+                className={cn(
+                  "h-11 px-4 transition-all duration-200",
+                  errors.password && "border-red-500 ring-red-500/20",
                 )}
-              </Field>
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
 
-              <Field>
-                <Button type="submit" className="w-full" disabled={isPending}>
-                  {isLoginPending ? "Logging in..." : "Login"}
-                </Button>
+            {/* Forgot Password */}
+            <div className="flex justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                পাসওয়ার্ড ভুলে গেছেন?
+              </Link>
+            </div>
 
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() =>
-                    googleMutate(undefined, {
-                      onError: (err) =>
-                        toast.error(
-                          err instanceof Error
-                            ? err.message
-                            : "Google login failed",
-                        ),
-                    })
-                  }
-                  disabled={isGooglePending}
-                  className="w-full"
-                >
-                  {isGooglePending ? "Connecting..." : "Login with Google"}
-                </Button>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isPending || !isFormFilled}
+              className="w-full h-11 font-medium transition-all duration-200 group"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  লগইন হচ্ছে...
+                </>
+              ) : (
+                <>
+                  লগইন করুন
+                  <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
+            </Button>
 
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account?{" "}
-                  <Link
-                    href="/register"
-                    className="underline underline-offset-4"
-                  >
-                    Sign up
-                  </Link>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
+            {/* Sign up link */}
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              অ্যাকাউন্ট নেই?{" "}
+              <Link
+                href="/register"
+                className="text-foreground font-medium hover:underline underline-offset-4"
+              >
+                সাইন আপ করুন
+              </Link>
+            </p>
           </form>
+
+          {/* ─── Divider ─── */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-3 text-muted-foreground">
+                অথবা ডেমো ব্যবহার করুন
+              </span>
+            </div>
+          </div>
+
+          {/* ─── Demo Accounts ─── */}
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-2.5">
+              {DEMO_USERS.map((user) => {
+                const Icon = user.icon;
+                const isActive =
+                  email === user.email && password === user.password;
+
+                return (
+                  <Button
+                    key={user.role}
+                    type="button"
+                    variant="outline"
+                    disabled={isPending}
+                    onClick={() => fillDemo(user.email, user.password)}
+                    className={cn(
+                      "h-auto flex flex-col items-center justify-center gap-1.5 p-3 transition-all duration-200 border-2",
+                      user.border,
+                      isActive
+                        ? "border-foreground shadow-md"
+                        : "border-transparent",
+                      "hover:shadow-md hover:scale-[1.02] active:scale-[0.98] relative", // ← relative যাতে indicator বসে
+                    )}
+                  >
+                    <div className={cn("rounded-full p-2", user.bg)}>
+                      <Icon className={cn("size-5", user.color)} />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-medium leading-tight">
+                        {user.role}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground truncate max-w-20">
+                        {user.email.split("@")[0]}
+                      </p>
+                    </div>
+                    {isActive && (
+                      <div className="absolute -top-1 -right-1 size-3 rounded-full bg-green-500 ring-2 ring-background" />
+                    )}
+                  </Button>
+                );
+              })}
+            </div>
+            <p className="text-center text-[11px] text-muted-foreground">
+              👆 একটি রোল নির্বাচন করুন — ইমেইল ও পাসওয়ার্ড অটো-ফিল হবে
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
