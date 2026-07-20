@@ -46,8 +46,8 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
   const fillDemo = (email: string, password: string) => {
     setValue("email", email);
     setValue("password", password);
-    toast.success(" ডেমো অ্যাকাউন্ট লোড হয়েছে", {
-      description: `আপনি ${email} দিয়ে লগইন করতে প্রস্তুত`,
+    toast.success("✅ Demo account loaded", {
+      description: `You are ready to login with ${email}`,
       duration: 3000,
     });
   };
@@ -71,11 +71,11 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="size-5 text-blue-500" />
               <CardTitle className="text-2xl font-bold bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-                স্বাগতম
+                Welcome
               </CardTitle>
             </div>
             <CardDescription className="text-sm text-muted-foreground">
-              আপনার অ্যাকাউন্টে লগইন করুন
+              Login to your account
             </CardDescription>
           </CardHeader>
         </div>
@@ -90,12 +90,12 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
                 className="text-sm font-medium text-foreground flex items-center gap-2"
               >
                 <Mail className="size-4 text-muted-foreground" />
-                ইমেইল
+                Email
               </label>
               <Input
                 id="email"
                 type="email"
-                placeholder="আপনার ইমেইল লিখুন"
+                placeholder="Enter your email"
                 disabled={isPending}
                 className={cn(
                   "h-11 px-4 transition-all duration-200",
@@ -117,12 +117,12 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
                 className="text-sm font-medium text-foreground flex items-center gap-2"
               >
                 <Lock className="size-4 text-muted-foreground" />
-                পাসওয়ার্ড
+                Password
               </label>
               <Input
                 id="password"
                 type="password"
-                placeholder="আপনার পাসওয়ার্ড লিখুন"
+                placeholder="Enter your password"
                 disabled={isPending}
                 className={cn(
                   "h-11 px-4 transition-all duration-200",
@@ -143,7 +143,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
                 href="/forgot-password"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                পাসওয়ার্ড ভুলে গেছেন?
+                Forgot password?
               </Link>
             </div>
 
@@ -156,11 +156,11 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />
-                  লগইন হচ্ছে...
+                  Logging in...
                 </>
               ) : (
                 <>
-                  লগইন করুন
+                  Login
                   <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
                 </>
               )}
@@ -168,12 +168,12 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
 
             {/* Sign up link */}
             <p className="text-center text-sm text-muted-foreground mt-4">
-              অ্যাকাউন্ট নেই?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/register"
                 className="text-foreground font-medium hover:underline underline-offset-4"
               >
-                সাইন আপ করুন
+                Sign up
               </Link>
             </p>
           </form>
@@ -185,7 +185,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-card px-3 text-muted-foreground">
-                অথবা ডেমো ব্যবহার করুন
+                Or use demo
               </span>
             </div>
           </div>
@@ -211,7 +211,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
                       isActive
                         ? "border-foreground shadow-md"
                         : "border-transparent",
-                      "hover:shadow-md hover:scale-[1.02] active:scale-[0.98] relative", // ← relative যাতে indicator বসে
+                      "hover:shadow-md hover:scale-[1.02] active:scale-[0.98] relative",
                     )}
                   >
                     <div className={cn("rounded-full p-2", user.bg)}>
@@ -233,7 +233,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
               })}
             </div>
             <p className="text-center text-[11px] text-muted-foreground">
-              👆 একটি রোল নির্বাচন করুন — ইমেইল ও পাসওয়ার্ড অটো-ফিল হবে
+              👆 Select a role — email and password will auto-fill
             </p>
           </div>
         </CardContent>
